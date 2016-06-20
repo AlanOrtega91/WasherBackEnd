@@ -90,6 +90,28 @@ class DataBaseService {
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
+		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
+		FROM Servicio_Pedido
+		LEFT JOIN Status ON
+		Servicio_Pedido.idStatus = Status.idStatus
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio
+		LEFT JOIN Tipo_Servicio ON
+		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
+		LEFT JOIN Cliente ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Servicio_Pedido.idLavador = Lavador.idLavador
+		WHERE Cliente.idCliente = '%s'
+		AND fechaEmpezado IS NOT NULL
+		ORDER BY fechaEmpezado DESC
+		;";
+		
 	var $mysqli;
   
   public function __construct()
@@ -183,6 +205,15 @@ class DataBaseService {
 		
 		if($result->num_rows === 0)
 			throw new serviceNotFoundException("Service not found");
+		
+    return $result;
+  }
+	
+	public function readServicesHistory($clientId)
+  {
+    $query = sprintf(DataBaseService::QUERY_SELECT_SERVICES_FOR_CLEANER,$clientId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
 		
     return $result;
   }

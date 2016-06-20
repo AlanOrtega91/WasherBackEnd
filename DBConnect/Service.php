@@ -30,6 +30,16 @@ class Service {
 		$info = $service->fetch_assoc();
 		return $info;
   }
+	
+	public function getHistory($clientId)
+  {
+    $services = $this->dataBase->readServicesHistory($clientId);
+		$servicesList = array();
+		while($service = $services->fetch_assoc())
+			array_push($servicesList,$service);
+		
+		return $servicesList;
+  }
   
   public function getStatus($serviceId)
   {

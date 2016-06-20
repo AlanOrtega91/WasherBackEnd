@@ -17,6 +17,7 @@ class DataBaseCleaner {
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Lavador (Token, idLavador) VALUES('%s', '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Mail = '%s');";
 
+
 	var $mysqli;
   
   public function __construct()
