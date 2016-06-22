@@ -40,6 +40,10 @@ class Service {
 		
 		return $servicesList;
   }
+	
+	public function sendReview($serviceId,$rating){
+		$this->dataBase->updateReview($serviceId,$rating);
+	}
   
   public function getStatus($serviceId)
   {
@@ -48,6 +52,12 @@ class Service {
 		$status = array("status"=>$row['status'],"finalTime"=>$row['horaFinalEstimada']);
 		return $status;
   }
+	
+	public function readReviewForCleaner($cleanerId){
+		$reviewRow = $this->dataBase->readReviewForCleaner($cleanerId);
+		$review = $reviewRow->fetch_assoc();
+		return $review['Calificacion'];
+	}
   
   public function changeServiceStatus($serviceId, $statusId)
   {

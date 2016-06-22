@@ -112,6 +112,10 @@ class DataBaseService {
 		ORDER BY fechaEmpezado DESC
 		;";
 		
+		const QUERY_UPDATE_SERVICE_REVIEW = "UPDATE Servicio_Pedido SET Calificacion = '%d' WHERE idServicioPedido = '%d';";
+		
+		const QUERY_READ_CLEANER_REVIEWS = "SELECT ROUND(AVG(Calificacion),1) AS Calificacion FROM Servicio_Pedido WHERE idLavador = '%d';";
+		
 	var $mysqli;
   
   public function __construct()
@@ -124,6 +128,15 @@ class DataBaseService {
 	public function readCleanersLocation($pointLatitud, $pointLongitud, $distance)
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_CLEANERS_LOCATION,$pointLatitud, $pointLongitud, $pointLatitud, $distance);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+		
+    return $result;
+	}
+	
+	public function readReviewForCleaner($cleanerId)
+	{
+		$query = sprintf(DataBaseService::QUERY_READ_CLEANER_REVIEWS,$cleanerId);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
 		
@@ -221,6 +234,12 @@ class DataBaseService {
 	public function updateStartTimeService($serviceId, $fecha)
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_START_TIME,$fecha,$serviceId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
+	}
+	
+	public function updateReview($serviceId,$rating){
+		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_REVIEW,$rating,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed');
 	}
