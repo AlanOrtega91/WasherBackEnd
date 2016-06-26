@@ -2,15 +2,15 @@
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
 
-if (!isset($_GET['name']) || !isset($_GET['lastName']) || !isset($_GET['mail']) || !isset($_GET['password']) || !isset($_GET['cel']))
+if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail']) || !isset($_POST['password']) || !isset($_POST['cel']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 
-$name = SafeString::safe($_GET['name']);
-$lastName = SafeString::safe($_GET['lastName']);
-$mail = SafeString::safe($_GET['mail']);
-$password = SafeString::safe($_GET['password']);
-$cel = SafeString::safe($_GET['cel']);
+$name = SafeString::safe($_POST['name']);
+$lastName = SafeString::safe($_POST['lastName']);
+$mail = SafeString::safe($_POST['mail']);
+$password = SafeString::safe($_POST['password']);
+$cel = SafeString::safe($_POST['cel']);
 try{
   $user  = new User();
   $user->addUser($name, $lastName, $mail, $password,$cel);

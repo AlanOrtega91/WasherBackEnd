@@ -43,6 +43,10 @@ class Cleaner {
 		$this->dataBase->deleteSession($mail);
 	}
 	
+	public function saveImage($cleanerId, $imageName){
+		$this->dataBase->updateImage($cleanerId, $imageName);
+	}
+	
 	function changePassword($mail, $newPassword, $oldPassword)
 	{
 		$this->dataBase->readUser($mail, $oldPassword);

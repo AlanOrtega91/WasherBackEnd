@@ -1,11 +1,11 @@
 <?php
 include dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../../DBConnect/Product.php";
-if (!isset($_GET['cleanerId']) || !isset($_GET['productId']))
+if (!isset($_POST['cleanerId']) || !isset($_POST['productId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
-$cleanerId = SafeString::safe($_GET['cleanerId']);
-$productId = SafeString::safe($_GET['productId']);
+$cleanerId = SafeString::safe($_POST['cleanerId']);
+$productId = SafeString::safe($_POST['productId']);
 
 try{
   $product  = new Product();

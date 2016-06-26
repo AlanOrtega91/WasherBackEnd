@@ -10,6 +10,6 @@ abstract class DataBase {
   const DB_LOGIN = 'root';
   const DB_PASSWORD ='';
   const DB_NAME = 'gilton';
-
+	
 }
 ?>

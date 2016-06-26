@@ -2,10 +2,10 @@
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_GET['idCliente']))
+if (!isset($_POST['idCliente']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$clientId = SafeString::safe($_GET['idCliente']);
+$clientId = SafeString::safe($_POST['idCliente']);
 try{
   $service  = new Service();
   $servicesHistory = $service->getHistory($clientId);

@@ -5,6 +5,7 @@ http://localhost/Gilton/API/User/ChangeUserData/?newName=Allan&newLastName=Ortte
 http://localhost/Gilton/API/User/ChangePassword/?mail=alan@gmail.com&newPassword=alan&oldPassword=prueba
 http://localhost/Gilton/API/User/ReadUserData/?token=
 http://localhost/Gilton/API/User/LogOut/?mail=prueba@gmail.com
+http://localhost/Gilton/API/User/UploadImage/?cleanerId=1&encoded_string=iVBORw0KGgoAAAANSUhEUgAAAFsAAABUCAAAAADICxSQAAAABGdBTUEAALGPC
 
 Service Related User
 http://localhost/Gilton/API/Service/GetNearbyCleaners/?latitud=19.301175&longitud=-99.202992&distancia=.853
@@ -13,6 +14,8 @@ http://localhost/Gilton/API/Service/GetServicePrice/?idCoche=1&idTipoServicio=1&
 http://localhost/Gilton/API/Service/RequestService/?direccion=mosdk&latitud=0&longitud=0&idServicio=1&idTipoServicio=2&idCliente=1&idCoche=8
 http://localhost/Gilton/API/Service/ChangeServiceStatus/?serviceId=1&statusId=2
 http://localhost/Gilton/API/Service/RequestServiceInfo/?serviceId=1
+http://localhost/Gilton/API/Service/SendReview/?serviceId=1&rating=5
+http://localhost/Gilton/API/Service/ReadReview/?cleanerId=1
 
 Service Related Cleaner
 http://localhost/Gilton/API/Service/ChangeServiceStatus/?serviceId=1&statusId=2
@@ -33,3 +36,4 @@ http://localhost/Gilton/API/Cleaner/LogOut/?mail=pablo.paniagua@gmail.com
 http://localhost/Gilton/API/Cleaner/ChangePassword/?mail=edg@gmail.com&newPassword=edgar&oldPassword=1234
 http://localhost/Gilton/API/Cleaner/ReadCleanerData/?token=
 http://localhost/Gilton/API/Cleaner/UpdateLocation/?cleanerId=1&latitud=19.301175&longitud=-99.222993
+http://localhost/Gilton/API/Cleaner/UploadImage/?cleanerId=1&encoded_string=iVBORw0KGgoAAAANSUhEUgAAAFsAAABUCAAAAADICxSQAAAABGdBTUEAALGPC

@@ -15,7 +15,7 @@ class DataBaseUser {
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Cliente (Token, idCliente) VALUES('%s', '%s');";
   const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Mail, Password, Celular) VALUES ('%s', '%s', '%s', MD5('%s'), '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Cliente WHERE idCliente = '%s';";
-
+	const QUERY_UPDATE_IMAGE = "UPDATE Cliente SET FotoURL = '%s' WHERE idCliente = '%s';";
 	var $mysqli;
   
   public function __construct()
@@ -84,7 +84,14 @@ class DataBaseUser {
     
     return $result;
   }
-  
+	
+  public function updateImage($userId, $imageName)
+	{
+		$query = sprintf(DataBaseUser::QUERY_UPDATE_IMAGE, $imageName, $userId);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("ERROR");
+	}
+	
   public function deleteSession($mail)
   {
     $query = sprintf(DataBaseUser::QUERY_DELETE_SESSION, $this->getUserId($mail));

@@ -2,12 +2,12 @@
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_GET['latitud']) || !isset($_GET['longitud']) || !isset($_GET['distancia']))
+if (!isset($_POST['latitud']) || !isset($_POST['longitud']) || !isset($_POST['distancia']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$distance = SafeString::safe($_GET['distancia']);
-$latitud = SafeString::safe($_GET['latitud']);
-$longitud = SafeString::safe($_GET['longitud']);
+$distance = SafeString::safe($_POST['distancia']);
+$latitud = SafeString::safe($_POST['latitud']);
+$longitud = SafeString::safe($_POST['longitud']);
 try{
   $service  = new Service();
   $cleaners = $service->getCleaners($latitud, $longitud,$distance);

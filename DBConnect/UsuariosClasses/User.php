@@ -37,6 +37,10 @@ private $dataBase;
 		$this->dataBase->deleteSession($mail);
 	}
 	
+	public function saveImage($userId, $imageName){
+		$this->dataBase->updateImage($userId, $imageName);
+	}
+	
 	function changePassword($mail, $newPassword, $oldPassword)
 	{
 		$this->dataBase->readUser($mail, $oldPassword);

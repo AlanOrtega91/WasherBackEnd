@@ -1,11 +1,11 @@
 <?php
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
-if (!isset($_GET['mail']) || !isset($_GET['password']))
+if (!isset($_POST['mail']) || !isset($_POST['password']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
-$mail = SafeString::safe($_GET['mail']);
-$password = SafeString::safe($_GET['password']);
+$mail = SafeString::safe($_POST['mail']);
+$password = SafeString::safe($_POST['password']);
 try{
   $cleaner  = new Cleaner();
   $cleanerInfo = $cleaner->sendLogIn($mail, $password);

@@ -2,10 +2,10 @@
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_GET['serviceId']))
+if (!isset($_POST['serviceId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$serviceId = SafeString::safe($_GET['serviceId']);
+$serviceId = SafeString::safe($_POST['serviceId']);
 try{
   $service  = new Service();
   $info = $service->getInfo($serviceId);

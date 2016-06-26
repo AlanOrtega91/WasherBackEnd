@@ -2,12 +2,12 @@
 include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 include dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_GET['idCoche']) || !isset($_GET['idServicio']) || !isset($_GET['idTipoServicio']))
+if (!isset($_POST['idCoche']) || !isset($_POST['idServicio']) || !isset($_POST['idTipoServicio']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$carId = SafeString::safe($_GET['idCoche']);
-$serviceId = SafeString::safe($_GET['idServicio']);
-$typeOfServiceId = SafeString::safe($_GET['idTipoServicio']);
+$carId = SafeString::safe($_POST['idCoche']);
+$serviceId = SafeString::safe($_POST['idServicio']);
+$typeOfServiceId = SafeString::safe($_POST['idTipoServicio']);
 try{
   $service  = new Service();
   $price = $service->getPriceForCar($carId,$serviceId,$typeOfServiceId);
