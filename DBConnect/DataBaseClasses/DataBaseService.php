@@ -44,11 +44,12 @@ class DataBaseService {
 	const QUERY_UPDATE_START_TIME = "UPDATE Servicio_Pedido SET FechaEmpezado = '%s' WHERE idServicioPedido = '%s';";
 	const QUERY_UPDATE_SERVICE = "UPDATE Servicio_Pedido SET idStatus = '%s' WHERE idServicioPedido = '%s';";
   const QUERY_READ_SERVICE =
-		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
+		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
-		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada
+		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -90,7 +91,7 @@ class DataBaseService {
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
-		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		const QUERY_SELECT_SERVICES_FOR_USER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
@@ -108,6 +109,28 @@ class DataBaseService {
 		LEFT JOIN Lavador ON
 		Servicio_Pedido.idLavador = Lavador.idLavador
 		WHERE Cliente.idCliente = '%s'
+		AND fechaEmpezado IS NOT NULL
+		ORDER BY fechaEmpezado DESC
+		;";
+		
+		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
+		FROM Servicio_Pedido
+		LEFT JOIN Status ON
+		Servicio_Pedido.idStatus = Status.idStatus
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio
+		LEFT JOIN Tipo_Servicio ON
+		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
+		LEFT JOIN Cliente ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Servicio_Pedido.idLavador = Lavador.idLavador
+		WHERE Lavador.idLavador = '%s'
 		AND fechaEmpezado IS NOT NULL
 		ORDER BY fechaEmpezado DESC
 		;";
@@ -222,7 +245,16 @@ class DataBaseService {
     return $result;
   }
 	
-	public function readServicesHistory($clientId)
+	public function readServicesHistoryForUser($clientId)
+  {
+    $query = sprintf(DataBaseService::QUERY_SELECT_SERVICES_FOR_USER,$clientId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
+		
+    return $result;
+  }
+	
+	public function readServicesHistoryForCleaner($clientId)
   {
     $query = sprintf(DataBaseService::QUERY_SELECT_SERVICES_FOR_CLEANER,$clientId);
 		if(!($result = $this->mysqli->query($query)))

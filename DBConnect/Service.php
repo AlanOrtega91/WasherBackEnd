@@ -31,9 +31,12 @@ class Service {
 		return $info;
   }
 	
-	public function getHistory($clientId)
+	public function getHistory($clientId,$clientType)
   {
-    $services = $this->dataBase->readServicesHistory($clientId);
+		if($clientType == 1)
+			$services = $this->dataBase->readServicesHistoryForUser($clientId);
+		else
+			$services = $this->dataBase->readServicesHistoryForCleaner($clientId);
 		$servicesList = array();
 		while($service = $services->fetch_assoc())
 			array_push($servicesList,$service);
