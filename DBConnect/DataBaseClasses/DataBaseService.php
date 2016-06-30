@@ -65,6 +65,63 @@ class DataBaseService {
 		Servicio_Pedido.idLavador = Lavador.idLavador
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
+		
+		const QUERY_READ_ACTIVE_SERVICE_FOR_USER =
+		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio, Servicio_Pedido.idServicioPedido AS id,
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
+		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
+		FROM Servicio_Pedido
+		LEFT JOIN Status ON
+		Servicio_Pedido.idStatus = Status.idStatus
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio
+		LEFT JOIN Tipo_Servicio ON
+		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
+		LEFT JOIN Cliente ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Sesion_Cliente ON
+		Sesion_Cliente.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Servicio_Pedido.idLavador = Lavador.idLavador
+		LEFT JOIN Sesion_Lavador ON
+		Sesion_Lavador.idLavador = Lavador.idLavador
+		WHERE Sesion_Cliente.Token = '%s'
+		AND Servicio_Pedido.idStatus != 5 
+		AND Servicio_Pedido.idStatus != 6
+		;";
+		const QUERY_READ_ACTIVE_SERVICE_FOR_CLEANER =
+		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio, Servicio_Pedido.idServicioPedido AS id,
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
+		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
+		FROM Servicio_Pedido
+		LEFT JOIN Status ON
+		Servicio_Pedido.idStatus = Status.idStatus
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio
+		LEFT JOIN Tipo_Servicio ON
+		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
+		LEFT JOIN Cliente ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Sesion_Cliente ON
+		Sesion_Cliente.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Servicio_Pedido.idLavador = Lavador.idLavador
+		LEFT JOIN Sesion_Lavador ON
+		Sesion_Lavador.idLavador = Lavador.idLavador
+		WHERE Sesion_Lavador.Token = '%s'
+		AND Servicio_Pedido.idStatus != 5 
+		AND Servicio_Pedido.idStatus != 6
+		;";
 		const QUERY_READ_CLEANERS_LOCATION = "SELECT Nombre,PrimerApellido,Latitud,Longitud,
 		( 6371 * acos( cos( radians('%s') ) * cos( radians( Latitud ) ) * cos( radians( Longitud ) - radians('%s') ) +
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
@@ -241,6 +298,24 @@ class DataBaseService {
 		
 		if($result->num_rows === 0)
 			throw new serviceNotFoundException("Service not found");
+		
+    return $result;
+  }
+	
+	public function readActiveServiceForUser($token)
+  {
+    $query = sprintf(DataBaseService::QUERY_READ_ACTIVE_SERVICE_FOR_USER,$token);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
+		
+    return $result;
+  }
+	
+	public function readActiveServiceForCleaner($token)
+  {
+    $query = sprintf(DataBaseService::QUERY_READ_ACTIVE_SERVICE_FOR_CLEANER,$token);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
 		
     return $result;
   }

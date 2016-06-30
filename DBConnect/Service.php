@@ -31,6 +31,16 @@ class Service {
 		return $info;
   }
 	
+	public function getActiveService($token,$userType)
+  {
+		if($userType == 1)
+			$service = $this->dataBase->readActiveServiceForUser($token);
+		else
+			$service = $this->dataBase->readActiveServiceForCleaner($token);
+		$info = $service->fetch_assoc();
+		return $info;
+  }
+	
 	public function getHistory($clientId,$clientType)
   {
 		if($clientType == 1)
