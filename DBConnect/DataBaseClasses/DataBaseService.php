@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/DataBase.php";
+require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseService {
   
   const QUERY_READ_ALL_SERVICES = "SELECT * FROM Servicio;";

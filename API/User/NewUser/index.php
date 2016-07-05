@@ -1,6 +1,6 @@
 <?php
-include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-include dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail']) || !isset($_POST['password']) || !isset($_POST['cel']))
   die(json_encode(array("Satus"=>"ERROR missing values")));

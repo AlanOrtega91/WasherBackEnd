@@ -1,6 +1,6 @@
 <?php
-include dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
-include dirname(__FILE__)."/../../../../DBConnect/Product.php";
+require_once dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../../DBConnect/Product.php";
 if (!isset($_POST['cleanerId']) || !isset($_POST['productId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 

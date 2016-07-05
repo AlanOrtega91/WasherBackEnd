@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/DataBaseClasses/DataBaseCar.php";
+require_once dirname(__FILE__)."/DataBaseClasses/DataBaseCar.php";
 class Car {
   
   private $dataBase;

@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/DataBase.php";
+require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseCar {
   
   const QUERY_INSERT_CAR = "INSERT INTO Coche (Placas, Color, idTamanioCoche, idTipoCoche)

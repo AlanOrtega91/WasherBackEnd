@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/DataBase.php";
+require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseProduct {
   
   const QUERY_READ_PRODUCTS = "SELECT Producto.idProducto, Lavador_Tiene_Producto.Cantidad, Producto.Producto, Producto.Descripcion FROM Lavador

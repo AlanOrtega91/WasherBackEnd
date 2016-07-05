@@ -1,7 +1,7 @@
 <?php
 header('Content-type: bitmap; charset=utf-8');
-include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-include dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
+require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
 if (!isset($_POST['cleanerId']) || !isset($_POST['encoded_string']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   

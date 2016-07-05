@@ -1,6 +1,6 @@
 <?php
-include dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
-include dirname(__FILE__)."/../../../../DBConnect/Car.php";
+require_once dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../../DBConnect/Car.php";
 
 if (!isset($_POST['placas']) || !isset($_POST['color']) || !isset($_POST['tamanioId']) || !isset($_POST['tipoId']) || !isset($_POST['clienteId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));

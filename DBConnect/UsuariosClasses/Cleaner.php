@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/../DataBaseClasses/DataBaseCleaner.php";
+require_once dirname(__FILE__)."/../DataBaseClasses/DataBaseCleaner.php";
 class Cleaner {
 	/*
    * Todo lo comentado esta en espera de que el cliente diga el funcionamiento de nuevos lavadores

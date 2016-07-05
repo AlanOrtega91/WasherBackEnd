@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__)."/../DataBaseClasses/DataBase.php";
+require_once dirname(__FILE__)."/../DataBaseClasses/DataBase.php";
 class DataBaseUser {
   
   const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Mail = '%s' AND Password = MD5('%s');";

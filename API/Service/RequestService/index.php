@@ -1,6 +1,6 @@
 <?php
-include dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-include dirname(__FILE__)."/../../../DBConnect/Service.php";
+require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
 if (!isset($_POST['direccion']) || !isset($_POST['latitud']) || !isset($_POST['longitud']) ||
     !isset($_POST['idServicio']) || !isset($_POST['idTipoServicio']) ||
