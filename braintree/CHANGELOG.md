@@ -1,85 +1,3 @@
-## 3.14.0
-* Add OrderId to refund
-* Add 3DS Pass thru support
-* Expose IDs in resource collections
-* Add leading slash to the namespace. Thanks, @bocharsky-bw
-* Stop modifying DateTime parameters during XML generation. Thanks, @jodarove
-
-## 3.13.0
-* Add method of revoking OAuth access tokens.
-
-## 3.12.0
-* Add Transaction `update_details`
-* Support for Too Many Requests response codes
-* Add ability to count errors in ErrorCollection object. Thanks, @bocharsky-bw
-* Improve Type Hinting
-
-## 3.11.0
-* Remove final from classes. Thanks, @ibrahimlawal!
-* Add currency to Transaction search
-
-## 3.10.0
-* Add timeout attribute
-* Add start-date and end-date to SUBSCRIPTION_CHARGED_SUCCESSFULLY test webhook response
-
-## 3.9.0
-* Add AccountUpdaterDailyReport webhook parsing
-
-## 3.8.0
-* Add payment method revoke
-* Add support for options in `submit_for_settlement` transaction flows
-* Add verification create API
-* Update https certificate bundle
-
-## 3.7.0
-* Add VenmoAccount
-* Allow order_id and descriptor to be passed in for Transaction submit_for_settlement
-* Add facilitator details onto transactions
-* Add check webhook constant
-
-## 3.6.1
-* Fix PSR-0 style namespacing when using Symfony
-
-## 3.6.0
-* Add support for proxy servers
-* Add PSR-4 namespacing support
-* Add support for AMEX Express Checkout
-* Add support for new fields in dispute webhooks (`dateWon`, `dateOpened`, `kind`)
-* Add transaction data to sucessful subscription webhook
-
-## 3.5.0
-* Add support for raw ApplePay params on Transaction create
-
-## 3.4.0
-* Add sourceDescription method to Android Pay and Apple Pay payment methods
-* Add new Android Pay test nonces
-* Add billing agreement ID to PayPal Account
-* Support amex rewards transactions
-
-## 3.3.0
-* Add new test payment method nonces
-* Allow passing description on PayPal transactions
-* Add methods to change transaction settlement status in sandbox
-* Fix issue where customer with an id of 0 could not be found
-* Add Europe Bank Account functionality
-
-## 3.2.0
-* Add additional search criteria
-
-## 3.1.0
-* Add support for HHVM
-* Validate that configuration is valid before verifying webhooks
-* Make OAuth methods conform more to existing API
-* Expose customer paymentMethods as an attribute
-
-## 3.0.1
-* Add support for Android Pay
-
-## 3.0.0
-* Deprecate PHP 5.2 and 5.3
-* Validate webhook challenge payload
-* Bugfix for calling `__toString()` on objects that contain a `\DateTime`
-
 ## 2.40.0
 * Add missing criteria to credit card verification search
 * Bugfix for autoloading files with Composer
@@ -238,7 +156,7 @@
 
 ## 2.15.0
 
-* Adds prepaid field to credit cards (possible values require_once Yes, No, Unknown)
+* Adds prepaid field to credit cards (possible values include Yes, No, Unknown)
 
 ## 2.14.1
 
@@ -384,7 +302,7 @@
 ## 2.0.0
 
 * Updated success? on transaction responses to return false on declined transactions
-* Search results now require_once Enumerable and will automatically paginate data
+* Search results now include Enumerable and will automatically paginate data
 * Added credit_card[cardholder_name] to allowed transaction params and CreditCardDetails (thanks [chrismcc](http://github.com/chrismcc))
 * Fixed a bug with Customer::all
 * Added constants for error codes

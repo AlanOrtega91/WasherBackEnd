@@ -1,11 +1,12 @@
 <?php
 
-require_once dirname(__FILE__).'/../braintree/lib/Braintree.php';
+require_once dirname(__FILE__).'/../../braintree/lib/Braintree.php';
+require_once dirname(__FILE__).'/../../DBConnect/Service.php';
 
 Braintree_Configuration::environment('sandbox');
-Braintree_Configuration::merchantId('j7y47rpby5mns8vg');
-Braintree_Configuration::publicKey('s5h9wj75c25s8y8r');
-Braintree_Configuration::privateKey('bbed5c25e540a8896b1c1cab8ed5f1ae');
+Braintree_Configuration::merchantId('ncjjy77xdztwsny3');
+Braintree_Configuration::publicKey('dhhbskndbg9nmwk2');
+Braintree_Configuration::privateKey('ab312b96bf5d161816b0f248779d04e3');
 if (!isset($_POST['operation']))
   die(json_encode(array("Satus"=>"ERROR missing values for operation")));
   
@@ -26,8 +27,13 @@ try{
     case 'read':
       $result =  json_encode(array("Status" => "OK","cards" => readClient()));
       break;
+    case 'transaction':
+      makeTransaction();
+      $result = json_encode(array("Status" => "OK"));
+      break;
   }
 } catch (Exception $e) {
+  echo $e->getMessage();
   $result = json_encode(array("Status" => "Error"));
 }
 
@@ -43,13 +49,13 @@ function createUserInBrainTree(){
   $lastName = $_POST['lastName'];
   $mail = $_POST['email'];
   $phone = $_POST['phone'];
-  $result = Braintree_Customer::create([
+  $result = Braintree_Customer::create(array(
     'id' => $id,
     'firstName' => $firstName,
     'lastName' => $lastName,
     'email' => $mail,
     'phone' => $phone
-  ]);
+  ));
   if(!$result->success)
     throw new errorCreatingUserException();
 }
@@ -59,9 +65,9 @@ function generateClientToken(){
     die(json_encode(array("Satus"=>"ERROR missing values")));
     
   $id = $_POST['id'];
-  return Braintree_ClientToken::generate([
+  return Braintree_ClientToken::generate(array(
                                           "customerId" => $id
-                                          ]);
+                                        ));
 }
 
 function updatePaymentMethodForUser(){
@@ -76,28 +82,28 @@ function updatePaymentMethodForUser(){
     $creditCardToken = $user->creditCards[0]->token;
     $result = BrainTree_Customer::update(
                                          $id,
-                                         [
-                                          'creditCard' => [
+                                         array(
+                                          'creditCard' => array(
                                                            'paymentMethodNonce' => $nonceFromClient,
-                                                           'options' => [
+                                                           'options' => array(
                                                                          'updateExistingToken' => $creditCardToken,
                                                                          'verifyCard' => true
-                                                                         ]
-                                                           ]
-                                          ]
+                                                                         )
+                                                           )
+                                          )
                                          );
   }
   else {
     $result = BrainTree_Customer::update(
                                          $id,
-                                         [
-                                          'creditCard' => [
+                                         array(
+                                          'creditCard' => array(
                                                            'paymentMethodNonce' => $nonceFromClient,
-                                                           'options' => [
+                                                           'options' => array(
                                                                          'verifyCard' => true
-                                                                         ]
-                                                           ]
-                                          ]
+                                                                         )
+                                                           )
+                                          )
                                          );
   }
   if(!$result->success)
@@ -120,6 +126,22 @@ function readClient(){
                "cardExpiration" => $Credit_Card->expirationDate,
                "cardNumber" => $Credit_Card->maskedNumber
                );
+}
+function makeTransaction(){
+  if (!isset($_POST['serviceId']))
+    die(json_encode(array("Satus"=>"ERROR missing values")));
+    
+  $serviceId = $_POST['serviceId'];
+  $service  = new Service();
+  $info = $service->getInfo($serviceId);
+  $id = $info['idCliente'];
+  $price = $info['precio'];
+  $Braintree_Transaction = Braintree_Transaction::sale(array(
+                                         'customerId' => $id,
+                                         'amount' => $price
+                                         ));
+  $transactionId = $Braintree_Transaction->transaction->id;
+  $service->saveTransaction($id,$transactionId);
 }
 class errorCreatingUserException extends Exception{
 	}

@@ -1,24 +1,17 @@
 <?php
-namespace Braintree;
 
 /**
- * Braintree PHP Library.
- *
- * Braintree base class and initialization
- * Provides methods to child classes. This class cannot be instantiated.
- *
- *  PHP version 5
- *
- * @copyright  2015 Braintree, a division of PayPal, Inc.
+ * Base functionality for library classes
  */
-abstract class Base
+abstract class Braintree_Base
 {
-    protected $_attributes = [];
-
     /**
+     * Disable the default constructor
+     *
+     * Objects that inherit from Braintree_Base should be constructed with
+     * the static factory() method.
+     *
      * @ignore
-     * don't permit an explicit call of the constructor!
-     * (like $t = new Transaction())
      */
     protected function __construct()
     {

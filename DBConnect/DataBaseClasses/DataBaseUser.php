@@ -16,6 +16,7 @@ class DataBaseUser {
   const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Mail, Password, Celular) VALUES ('%s', '%s', '%s', MD5('%s'), '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Cliente WHERE idCliente = '%s';";
 	const QUERY_UPDATE_IMAGE = "UPDATE Cliente SET FotoURL = '%s' WHERE idCliente = '%s';";
+	const QUERY_UPDATE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '%s' WHERE idCliente = '%s';";
 	var $mysqli;
   
   public function __construct()
@@ -32,6 +33,13 @@ class DataBaseUser {
 			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
   }
   
+	public function updatePushNotificationToken($clientId,$token){
+		$query = sprintf(DataBaseUser::QUERY_UPDATE_PNT_FOR_CLIENT,$token,$clientId);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+	}
+	
+	
   public function readUser($mail,$password)
   {
     $query = sprintf(DataBaseUser::QUERY_READ_USER, $mail, $password);

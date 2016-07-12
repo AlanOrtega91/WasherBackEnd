@@ -2,18 +2,19 @@
 require_once dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../../DBConnect/Car.php";
 
-if (!isset($_POST['placas']) || !isset($_POST['color']) || !isset($_POST['tamanioId']) || !isset($_POST['tipoId']) || !isset($_POST['clienteId']))
+if (!isset($_POST['vehiculoId']) || !isset($_POST['clienteId']) || !isset($_POST['color']) || !isset($_POST['placas'])  || !isset($_POST['modelo']) || !isset($_POST['marca']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$placas = SafeString::safe($_POST['placas']);
-$color = SafeString::safe($_POST['color']);
-$tamanioId = SafeString::safe($_POST['tamanioId']);
-$tipoId = SafeString::safe($_POST['tipoId']);
+$vehiculoId = SafeString::safe($_POST['vehiculoId']);
 $clientId = SafeString::safe($_POST['clienteId']);
+$color = SafeString::safe($_POST['color']);
+$placas = SafeString::safe($_POST['placas']);
+$modelo = SafeString::safe($_POST['modelo']);
+$marca = SafeString::safe($_POST['marca']);
 try{
   $car  = new Car();
-  $idCoche = $car->addCar($placas,$color, $tamanioId, $tipoId, $clientId);
-  echo json_encode(array("Status"=>"OK","idCoche"=>$idCoche));
+  $car->addCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
+  echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));

@@ -49,7 +49,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
+		Cliente.idCliente AS idCliente, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -148,7 +148,7 @@ class DataBaseService {
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
-		const QUERY_SELECT_SERVICES_FOR_USER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		const QUERY_SELECT_SERVICES_FOR_USER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
@@ -170,7 +170,7 @@ class DataBaseService {
 		ORDER BY fechaEmpezado DESC
 		;";
 		
-		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
@@ -195,7 +195,12 @@ class DataBaseService {
 		const QUERY_UPDATE_SERVICE_REVIEW = "UPDATE Servicio_Pedido SET Calificacion = '%d' WHERE idServicioPedido = '%d';";
 		
 		const QUERY_READ_CLEANER_REVIEWS = "SELECT ROUND(AVG(Calificacion),1) AS Calificacion FROM Servicio_Pedido WHERE idLavador = '%d';";
-		
+		const QUERY_UPDATE_TRANSACTION_ID = "UPDATE Servicio_Pedido SET idTransaccion = '%s' WHERE idServicioPedido = '%d';";
+		const QUERY_READ_PUSH_NOTIFICATION_TOKEN = "SELECT pushNotificationToken From Cliente
+		LEFT JOIN Servicio_Pedido ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		WHERE Servicio_Pedido.idServicioPedido = '%s'
+		;";
 	var $mysqli;
   
   public function __construct()
@@ -204,6 +209,21 @@ class DataBaseService {
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException("Error connecting with database");
   }
+		
+		public function readPushNotificationToken($serviceId)
+		{
+				$query = sprintf(DataBaseService::QUERY_READ_PUSH_NOTIFICATION_TOKEN,$serviceId);
+				if(!($result = $this->mysqli->query($query)))
+					throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+				
+				return $result;
+		}
+	
+	public function updateTransactionId($serviceId,$transactionId){
+		$query = sprintf(DataBaseService::QUERY_UPDATE_TRANSACTION_ID,$transactionId,$serviceId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
+	}
 	
 	public function readCleanersLocation($pointLatitud, $pointLongitud, $distance)
 	{

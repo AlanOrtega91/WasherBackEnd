@@ -1,11 +1,7 @@
 #!/bin/bash
 
-curl -sS https://getcomposer.org/installer | php -d suhosin.executor.require_once.whitelist=phar
+curl -sS https://getcomposer.org/installer | php -d suhosin.executor.include.whitelist=phar
 
-php -d suhosin.executor.require_once.whitelist=phar ./composer.phar install
+php -d suhosin.executor.include.whitelist=phar ./composer.phar install
 
-if [ "$1" == "hhvm" ]; then
-  rake test:hhvm --trace
-else
-  rake test:php --trace
-fi
+rake --trace

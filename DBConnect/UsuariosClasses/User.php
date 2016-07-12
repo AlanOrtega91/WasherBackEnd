@@ -14,10 +14,15 @@ private $dataBase;
 		return $this->dataBase->readUserInfo($token);
 	}
 	
+	function savePushNotificationToken($clientId,$token){
+		$this->dataBase->updatePushNotificationToken($clientId,$token);
+	}
+	
   function sendLogIn($mail,$password)
 	{
 		$this->dataBase->readUser($mail, $password);	
     $token = $this->createSession($mail);
+		
 		return $this->dataBase->readUserInfo($token);
 	}
 	

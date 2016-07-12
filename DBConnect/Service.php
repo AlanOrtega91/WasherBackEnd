@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/DataBaseClasses/DataBaseService.php";
+require_once dirname(__FILE__)."/PushNotification.php";
 class Service {
   
   private $dataBase;
@@ -9,6 +10,10 @@ class Service {
     $this->dataBase = new DataBaseService();
 	}
   
+	public function saveTransaction($serviceId,$transactionId){
+		$service = $this->dataBase->updateTransactionId($serviceId,$transactionId);
+	}
+	
   public function getServices()
   {
     $services = $this->dataBase->readAllServices();
@@ -74,14 +79,35 @@ class Service {
   
   public function changeServiceStatus($serviceId, $statusId)
   {
-		if ($statusId == 4) {
-			date_default_timezone_set('America/Mexico_City');
-			$fecha = date("Y-m-d H:i:s");
-			$this->dataBase->updateStartTimeService($serviceId, $fecha);
-			$this->dataBase->removeCleanerProducts($serviceId);
-		}
-    $this->dataBase->updateService($serviceId, $statusId);
+				if ($statusId == 4) {
+					date_default_timezone_set('America/Mexico_City');
+					$fecha = date("Y-m-d H:i:s");
+					$this->dataBase->updateStartTimeService($serviceId, $fecha);
+					$this->dataBase->removeCleanerProducts($serviceId);
+				}
+				$this->dataBase->updateService($serviceId, $statusId);
+				$message = $this->selectMessage($statusId);
+				$row = $this->dataBase->readPushNotificationToken($serviceId);
+				$token = $row->fetch_assoc();
+				PushNotification::sendNotification(array($token['pushNotificationToken']),$message);
   }
+		
+		public function selectMessage($statusId) {
+				switch($statusId){
+						case 1:
+								return array("message" => "1");
+						case 2:
+								return array("message" => "2");
+						case 3:
+								return array("message" => "3");
+						case 4:
+								return array("message" => "4");
+						case 5:
+								return array("message" => "5");
+						case 6:
+								return array("message" => "6");
+				}
+		}
   
   public function getCleaners($latitud, $longitud,$distance)
   {
