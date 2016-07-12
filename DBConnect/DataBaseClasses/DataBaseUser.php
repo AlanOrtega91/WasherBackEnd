@@ -8,7 +8,8 @@ class DataBaseUser {
 	Cliente.idCliente = Sesion_Cliente.idCliente
 	WHERE Token = '%s';";
 	const QUERY_GET_USER_ID = "SELECT idCliente FROM Cliente WHERE Mail = '%s';";
-	const QUERY_UPDATE_USER = "UPDATE Cliente SET Nombre = '%s', PrimerApellido = '%s', Celular = '%s', Mail = '%s' WHERE Mail = '%s'";
+	const QUERY_UPDATE_USER = "UPDATE Cliente SET Nombre = '%s', PrimerApellido = '%s', Celular = '%s', Mail = '%s',
+	NombreFactura = '%s', RFC = '%s', DireccionFactura = '%s' WHERE Mail = '%s'";
 	const QUERY_UPDATE_PASSWORD = "UPDATE Cliente SET Password = MD5('%s') WHERE Mail = '%s'";
   const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Cliente LEFT JOIN Cliente WHERE Mail='%s'";
   const QUERY_READ_SESSION = "SELECT * FROM Sesion_Cliente WHERE Token='%s';";
@@ -126,9 +127,9 @@ class DataBaseUser {
 			throw new errorWithDatabaseException("ERROR");
 	}
 	
-	public function updateUser($newName, $newLastName, $newCel, $newMail, $oldMail)
+	public function updateUser($newName, $newLastName, $newCel, $newMail, $oldMail, $newBillingName, $newRFC, $newBillingAddress)
 	{
-		$query = sprintf(DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newCel, $newMail, $oldMail);
+		$query = sprintf(DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress, $oldMail);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("ERROR");
 	}

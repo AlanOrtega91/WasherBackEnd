@@ -52,9 +52,9 @@ private $dataBase;
 		$this->dataBase->updatePassword($mail,$newPassword);
 	}
 	
-	function changeData($newName, $newLastName, $newCel, $newMail, $oldMail)
+	function changeData($newName, $newLastName, $newCel, $newMail, $oldMail, $newBillingName, $newRFC, $newBillingAddress)
 	{
-		$this->dataBase->updateUser($newName, $newLastName, $newCel, $newMail, $oldMail);
+		$this->dataBase->updateUser($newName, $newLastName, $newCel, $newMail, $oldMail, $newBillingName, $newRFC, $newBillingAddress);
 	}
 	
 	private function userHasToken($token)
