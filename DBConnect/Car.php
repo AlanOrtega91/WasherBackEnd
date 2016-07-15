@@ -11,7 +11,7 @@ class Car {
   
 		public function addCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca)
 	{
-		$this->dataBase->insertCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
+		return $this->dataBase->insertCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
 	}
 	
 	public function editCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$modelo,$marca){

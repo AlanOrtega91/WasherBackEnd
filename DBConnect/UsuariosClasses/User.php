@@ -35,6 +35,7 @@ private $dataBase;
 	function addUser($name, $lastName, $mail, $password, $cel)
 	{
 		$this->dataBase->insertNewUser($name, $lastName, $mail, $password, $cel);
+		return $this->sendLogIn($mail,$password);
 	}
 
 	function sendLogOut($mail)
@@ -52,9 +53,9 @@ private $dataBase;
 		$this->dataBase->updatePassword($mail,$newPassword);
 	}
 	
-	function changeData($newName, $newLastName, $newCel, $newMail, $oldMail, $newBillingName, $newRFC, $newBillingAddress)
+	function changeData($idClient, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress)
 	{
-		$this->dataBase->updateUser($newName, $newLastName, $newCel, $newMail, $oldMail, $newBillingName, $newRFC, $newBillingAddress);
+		$this->dataBase->updateUser($idClient, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress);
 	}
 	
 	private function userHasToken($token)

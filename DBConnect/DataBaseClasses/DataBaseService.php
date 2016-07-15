@@ -49,7 +49,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.idCliente AS idCliente, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
+		Cliente.idCliente AS idCliente, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion 
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -72,7 +72,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
+		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -425,15 +425,4 @@ class DataBaseService {
 	}
   
 }
-class errorWithDatabaseException extends Exception{
-	}
-class sessionNotFoundException extends Exception{
-	}
-class serviceNotFoundException extends Exception{
-	}
-class serviceTakenException extends Exception {
-	}
-class insufficientProductException extends Exception {
-}
-
 ?>

@@ -12,4 +12,23 @@ abstract class DataBase {
   const DB_NAME = 'gilton';
 	*/
 }
+
+class carsNotFoundException extends Exception{
+	}
+class errorWithDatabaseException extends Exception{
+	}
+class sessionNotFoundException extends Exception{
+	}
+class userNotFoundException extends Exception{
+	}
+class cleanerNotFoundException extends Exception{
+	}
+	class cleanerHasNoProductsException extends Exception{
+	}
+class serviceNotFoundException extends Exception{
+	}
+class serviceTakenException extends Exception {
+	}
+class insufficientProductException extends Exception {
+}
 ?>

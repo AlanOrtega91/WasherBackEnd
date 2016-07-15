@@ -62,7 +62,3 @@ class DataBaseCar {
     return $result;
 	}
 }
-class carsNotFoundException extends Exception{
-	}
-class errorWithDatabaseException extends Exception{
-	}

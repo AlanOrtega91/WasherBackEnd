@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__FILE__)."/DataBaseClasses/DataBase.php";
+
 class SafeString
 {
 	public static function safe($string){

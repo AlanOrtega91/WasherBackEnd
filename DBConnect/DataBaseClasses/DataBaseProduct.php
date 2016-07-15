@@ -41,7 +41,4 @@ class DataBaseProduct {
 			throw new errorWithDatabaseException('Query failed');
 	}
 }
-class cleanerHasNoProductsException extends Exception{
-	}
-class errorWithDatabaseException extends Exception{
-	}
+	?>

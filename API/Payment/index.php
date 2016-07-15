@@ -118,10 +118,9 @@ function readClient(){
   $BrainTree_Customer = Braintree_Customer::find($id);
   $Credit_Cards = $BrainTree_Customer->creditCards;
   if(count($Credit_Cards) <= 0)
-    return array("id" => $BrainTree_Customer->id);
+    return;
   $Credit_Card = $Credit_Cards[0];
   return array(
-               "id" => $BrainTree_Customer->id,
                "cardName" => $Credit_Card->cardholderName,
                "cardExpiration" => $Credit_Card->expirationDate,
                "cardNumber" => $Credit_Card->maskedNumber

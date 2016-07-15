@@ -125,10 +125,4 @@ class DataBaseCleaner {
 			throw new errorWithDatabaseException("ERROR");
 	}
 }
-class errorWithDatabaseException extends Exception{
-	}
-class sessionNotFoundException extends Exception{
-	}
-class cleanerNotFoundException extends Exception{
-	}
 ?>

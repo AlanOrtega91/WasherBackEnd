@@ -13,8 +13,8 @@ $modelo = SafeString::safe($_POST['modelo']);
 $marca = SafeString::safe($_POST['marca']);
 try{
   $car  = new Car();
-  $car->addCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
-  echo json_encode(array("Status"=>"OK"));
+  $carId = $car->addCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
+  echo json_encode(array("Status"=>"OK","carId" => $carId));
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));
