@@ -13,6 +13,7 @@ class Cleaner {
 	
   function sendLogIn($mail,$password)
 	{
+		$this->sendLogOut($mail);
 		$this->dataBase->readUser($mail, $password);
 		$token = $this->createSession($mail);
 		return $this->dataBase->readCleanerInfo($token);

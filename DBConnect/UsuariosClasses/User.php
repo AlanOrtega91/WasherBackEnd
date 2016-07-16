@@ -20,6 +20,7 @@ private $dataBase;
 	
   function sendLogIn($mail,$password)
 	{
+		$this->sendLogOut($mail);
 		$this->dataBase->readUser($mail, $password);	
     $token = $this->createSession($mail);
 		
@@ -40,6 +41,7 @@ private $dataBase;
 
 	function sendLogOut($mail)
 	{
+		$this->dataBase->deletePushNotification($mail);
 		$this->dataBase->deleteSession($mail);
 	}
 	

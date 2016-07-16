@@ -1,10 +1,16 @@
 <?php
 class PushNotification{
-			public static function sendNotification($tokens, $message){
+			public static function sendNotification($token, $message){
 						$url = 'https://fcm.googleapis.com/fcm/send';
 						$fields = array(
-							'registration_ids' => $tokens,
-							'data' => $message
+							'notification' => array(
+																															"title" => "Vashen",
+																															"body" => $message['message'],
+																															"icon" => "default",
+																															"sound" => "default"
+																															),
+							"data" => $message,
+							'to' => $token
 						);
 						$headers = array(
 									'Authorization:key = AIzaSyAKHM3MoMACjmeVK46TDg8-rTj1KoVjzWs',
@@ -20,6 +26,7 @@ class PushNotification{
 						curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($fields));
 						$result = curl_exec($ch);
 						if($result === FALSE) {
+			
 									throw new errorSendingNotification();
 						}
 						curl_close($ch);

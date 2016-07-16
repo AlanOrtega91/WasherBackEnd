@@ -17,7 +17,7 @@ try{
   $userInfo = $user->readUserData($token);
   $clientId = $userInfo['idCliente'];
   $carsList = $car->getCarsList($clientId);
-  $servicesHistory = $service->getHistory($clientId,$clientType);
+  $servicesHistory = $service->getHistory($clientId,1);
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo,
                          "carsList"=>$carsList,"History"=>$servicesHistory,"cards" => readClient($clientId)));
 } catch(userNotFoundException $e)

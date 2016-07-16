@@ -56,9 +56,6 @@ class DataBaseCar {
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
 		
-		if($result->num_rows === 0)
-			throw new carsNotFoundException("No favorite cars found");
-		
     return $result;
 	}
 }

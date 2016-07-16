@@ -17,7 +17,6 @@ class DataBaseCleaner {
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Lavador (Token, idLavador) VALUES('%s', '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Mail = '%s');";
 	const QUERY_UPDATE_IMAGE = "UPDATE Lavador SET FotoURL = '%s' WHERE idLavador = '%s';";
-
 	var $mysqli;
   
   public function __construct()
@@ -46,10 +45,11 @@ class DataBaseCleaner {
   
   public function insertSession($mail)
   {
+		
     $token = md5(uniqid(mt_rand(), true));
-		$query = sprintf(DataBaseCleaner::QUERY_INSERT_SESSION,$token, $this->getCleanerId($mail));
-		if(!$this->mysqli->query($query))
-			throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+				$query = sprintf(DataBaseCleaner::QUERY_INSERT_SESSION,$token, $this->getCleanerId($mail));
+				if(!$this->mysqli->query($query))
+						throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
 	
     return $token;
   }

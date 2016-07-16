@@ -132,7 +132,8 @@ class DataBaseService {
 		( 6371 * acos( cos( radians('%s') ) * cos( radians( Latitud ) ) * cos( radians( Longitud ) - radians('%s') ) +
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
 		FROM Servicio_Pedido HAVING distance < '%s' 
-		AND idLavador IS NULL
+		AND idLavador IS NULL 
+		AND Servicio_Pedido.idStatus != 6 
 		ORDER BY distance
 		;";
 		const QUERY_UPDATE_CLEANER_PRODUCTS = "UPDATE Servicio_Pedido
@@ -195,7 +196,8 @@ class DataBaseService {
 		const QUERY_UPDATE_SERVICE_REVIEW = "UPDATE Servicio_Pedido SET Calificacion = '%d' WHERE idServicioPedido = '%d';";
 		
 		const QUERY_READ_CLEANER_REVIEWS = "SELECT ROUND(AVG(Calificacion),1) AS Calificacion FROM Servicio_Pedido WHERE idLavador = '%d';";
-		const QUERY_UPDATE_TRANSACTION_ID = "UPDATE Servicio_Pedido SET idTransaccion = '%s' WHERE idServicioPedido = '%d';";
+		const QUERY_UPDATE_TRANSACTION_ID = "UPDATE Servicio_Pedido SET idTransaccion = '%s'
+		WHERE idServicioPedido = '%s';";
 		const QUERY_READ_PUSH_NOTIFICATION_TOKEN = "SELECT pushNotificationToken From Cliente
 		LEFT JOIN Servicio_Pedido ON
 		Servicio_Pedido.idCliente = Cliente.idCliente

@@ -89,23 +89,21 @@ class Service {
 				$message = $this->selectMessage($statusId);
 				$row = $this->dataBase->readPushNotificationToken($serviceId);
 				$token = $row->fetch_assoc();
-				PushNotification::sendNotification(array($token['pushNotificationToken']),$message);
+				PushNotification::sendNotification($token['pushNotificationToken'],$message);
   }
 		
 		public function selectMessage($statusId) {
 				switch($statusId){
-						case 1:
-								return array("message" => "1");
 						case 2:
-								return array("message" => "2");
+								return array("state" => "2","message" => "Tu servicio ya fue aceptado");
 						case 3:
-								return array("message" => "3");
+								return array("state" => "3","message" => "Tu servicio va de camino");
 						case 4:
-								return array("message" => "4");
+								return array("state" => "4","message" => "Tu servicio ha comenzado");
 						case 5:
-								return array("message" => "5");
+								return array("state" => "5","message" => "Tu servicio se ha completado");
 						case 6:
-								return array("message" => "6");
+								return array("state" => "6","message" => "6");
 				}
 		}
   

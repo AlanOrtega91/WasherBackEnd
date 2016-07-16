@@ -18,6 +18,8 @@ class DataBaseUser {
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Cliente WHERE idCliente = '%s';";
 	const QUERY_UPDATE_IMAGE = "UPDATE Cliente SET FotoURL = '%s' WHERE idCliente = '%s';";
 	const QUERY_UPDATE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '%s' WHERE idCliente = '%s';";
+	const QUERY_DELETE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '' WHERE Mail = '%s';";
+const QUERY_DELETE_PNT = "UPDATE Cliente SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
 	var $mysqli;
   
   public function __construct()
@@ -26,18 +28,28 @@ class DataBaseUser {
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException("Error connecting with database");
   }
-  
+  public function deletePushNotification($mail)
+		{
+				$query = sprintf(DataBaseUser::QUERY_DELETE_PNT_FOR_CLIENT,$mail);
+				if(!$this->mysqli->query($query))
+						throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		}
   public function insertNewUser($name, $lastName, $mail, $password, $cel)
   {
     $query = sprintf(DataBaseUser::QUERY_INSERT_USER,$name, $lastName, $mail,$password, $cel);
-		if(!$this->mysqli->query($query))
-			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+				if(!$this->mysqli->query($query))
+						throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
   }
   
 	public function updatePushNotificationToken($clientId,$token){
+		$query = sprintf(DataBaseUser::QUERY_DELETE_PNT,$token);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		
 		$query = sprintf(DataBaseUser::QUERY_UPDATE_PNT_FOR_CLIENT,$token,$clientId);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		
 	}
 	
 	
@@ -66,10 +78,10 @@ class DataBaseUser {
   public function insertSession($mail)
   {
     $token = md5(uniqid(mt_rand(), true));
-		$query = sprintf(DataBaseUser::QUERY_INSERT_SESSION,$token, $this->getUserId($mail));
-		if(!$this->mysqli->query($query))
-			throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
-    return $token;
+				$query = sprintf(DataBaseUser::QUERY_INSERT_SESSION,$token, $this->getUserId($mail));
+				if(!$this->mysqli->query($query))
+					throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+				return $token;
   }
 	
 	function getUserId($mail)

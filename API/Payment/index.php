@@ -140,7 +140,7 @@ function makeTransaction(){
                                          'amount' => $price
                                          ));
   $transactionId = $Braintree_Transaction->transaction->id;
-  $service->saveTransaction($id,$transactionId);
+  $service->saveTransaction($serviceId,$transactionId);
 }
 class errorCreatingUserException extends Exception{
 	}
