@@ -17,10 +17,12 @@ $idCoche = SafeString::safe($_POST['idCoche']);
 try{
   $service  = new Service();
   $idService = $service->requestService($direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche);
-  echo json_encode(array("Status"=>"OK","idService"=>$idService));
+  $info = $service->getInfo($idService);
+  echo json_encode(array("Status"=>"OK","info"=>$info));
 } catch(errorWithDatabaseException $e)
 {
-  echo $e->getMessage();
   echo json_encode(array("Status"=>"ERROR DB"));
+} catch (errorMakingPaymentException $e) {
+  echo json_encode(array("Status"=>"ERROR Payment"));
 }
 ?>

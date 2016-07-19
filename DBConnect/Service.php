@@ -1,6 +1,8 @@
 <?php
 require_once dirname(__FILE__)."/DataBaseClasses/DataBaseService.php";
 require_once dirname(__FILE__)."/PushNotification.php";
+require_once dirname(__FILE__).'/../braintree/lib/Braintree.php';
+
 class Service {
   
   private $dataBase;
@@ -83,29 +85,61 @@ class Service {
 					date_default_timezone_set('America/Mexico_City');
 					$fecha = date("Y-m-d H:i:s");
 					$this->dataBase->updateStartTimeService($serviceId, $fecha);
-					$this->dataBase->removeCleanerProducts($serviceId);
+					$this->dataBase->removeCleanerProducts($serviceId);					
 				}
+		
 				$this->dataBase->updateService($serviceId, $statusId);
-				$message = $this->selectMessage($statusId);
+				$service = $this->dataBase->readService($serviceId);
+				$line = $service->fetch_assoc();
+				$message = $this->selectMessage($statusId, $line);
 				$row = $this->dataBase->readPushNotificationToken($serviceId);
 				$token = $row->fetch_assoc();
 				PushNotification::sendNotification($token['pushNotificationToken'],$message);
+				PushNotification::sendMessage($token['pushNotificationToken'],$message);
   }
 		
-		public function selectMessage($statusId) {
+		public function selectMessage($statusId,$line) {
 				switch($statusId){
 						case 2:
-								return array("state" => "2","message" => "Tu servicio ya fue aceptado");
+								return array("state" => "2","message" => "Tu servicio ya fue aceptado","serviceInfo" => $line);
 						case 3:
-								return array("state" => "3","message" => "Tu servicio va de camino");
+								return array("state" => "3","message" => "Tu servicio va de camino","serviceInfo" => $line);
 						case 4:
-								return array("state" => "4","message" => "Tu servicio ha comenzado");
+								return array("state" => "4","message" => "Tu servicio ha comenzado","serviceInfo" => $line);
 						case 5:
-								return array("state" => "5","message" => "Tu servicio se ha completado");
+								return array("state" => "5","message" => "Tu servicio se ha completado","serviceInfo" => $line);
 						case 6:
-								return array("state" => "6","message" => "6");
+								return array("state" => "6","message" => "Tu servicio fue cancelado","serviceInfo" => $line);
 				}
 		}
+		
+		function makePayment($serviceId){
+				$service = $this->dataBase->readService($serviceId);
+				$line = $service->fetch_assoc();
+				if($line['idTransaccion'] == null){
+						$idClient = $this->dataBase->getUserId($serviceId);
+						$this->makeTransaction($serviceId, $idClient);
+				}
+		}
+		
+		function makeTransaction($serviceId, $id)
+		{
+				Braintree_Configuration::environment('sandbox');
+				Braintree_Configuration::merchantId('ncjjy77xdztwsny3');
+				Braintree_Configuration::publicKey('dhhbskndbg9nmwk2');
+				Braintree_Configuration::privateKey('ab312b96bf5d161816b0f248779d04e3');
+				$info = $this->getInfo($serviceId);
+				$price = $info['precio'];
+				$Braintree_Transaction = Braintree_Transaction::sale(array(
+                                         'customerId' => $id,
+                                         'amount' => $price
+                                         ));
+				if(!$Braintree_Transaction->success)
+						throw new errorMakingPaymentException();
+				
+				$transactionId = $Braintree_Transaction->transaction->id;
+				$this->saveTransaction($serviceId,$transactionId);
+}
   
   public function getCleaners($latitud, $longitud,$distance)
   {
@@ -129,10 +163,11 @@ class Service {
   
   public function requestService($direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche)
   {
-		date_default_timezone_set('America/Mexico_City');
-		$fecha = date("Y-m-d H:i:s");
+				date_default_timezone_set('America/Mexico_City');
+				$fecha = date("Y-m-d H:i:s");
     $idService = $this->dataBase->insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche);
-		return $idService;
+				$this->makePayment($idService);
+				return $idService;
   }
 	
 	public function acceptService($serviceId,$cleanerId)

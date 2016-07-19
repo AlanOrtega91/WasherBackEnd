@@ -2,16 +2,16 @@
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_POST['latitud']) || !isset($_POST['longitud']) || !isset($_POST['distancia']))
+if (!isset($_POST['latitud']) || !isset($_POST['longitud']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-$distance = SafeString::safe($_POST['distancia']);
+$distance = 5;
 $latitud = SafeString::safe($_POST['latitud']);
 $longitud = SafeString::safe($_POST['longitud']);
 try{
   $service  = new Service();
-  $cleaners = $service->getServicesNearby($latitud, $longitud,$distance);
-  echo json_encode(array("Status"=>"OK","cleaners"=>$cleaners));
+  $services = $service->getServicesNearby($latitud, $longitud,$distance);
+  echo json_encode(array("Status"=>"OK","services"=>$services));
 } catch(errorWithDatabaseException $e)
 {
   echo $e->getMessage();

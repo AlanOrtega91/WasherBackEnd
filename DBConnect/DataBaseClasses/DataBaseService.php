@@ -26,15 +26,17 @@ class DataBaseService {
 	const QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_AVAILABLE_PRODUCTS = "SELECT * FROM Servicio_Pedido
 	LEFT JOIN Servicio ON
 	Servicio.idServicio = Servicio_Pedido.idServicio
-	LEFT JOIN Servicio_Usa_Producto ON
-	Servicio_Usa_Producto.idServicio = Servicio.idServicio
+	LEFT JOIN Vehiculo ON
+	Vehiculo.idVehiculo = Servicio_Pedido.idVehiculo
+	LEFT JOIN Vehiculo_Usa_Producto ON
+	Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo 
 	LEFT JOIN Producto ON
-	Producto.idProducto = Servicio_Usa_Producto.idProducto
+	Producto.idProducto = Vehiculo_Usa_Producto.idProducto
 	LEFT JOIN Lavador_Tiene_Producto ON
 	Lavador_Tiene_Producto.idProducto = Producto.idProducto
 	LEFT JOIN Lavador ON
 	Lavador.idLavador = Lavador_Tiene_Producto.idLavador
-	WHERE Lavador_Tiene_Producto.Cantidad >= Servicio_Usa_Producto.CantidadConsumida
+	WHERE Lavador_Tiene_Producto.Cantidad >= Vehiculo_Usa_Producto.CantidadConsumida
 	AND Lavador.idLavador = '%s'
 	AND Servicio_Pedido.idServicioPedido = '%s'
 	;";
@@ -44,12 +46,11 @@ class DataBaseService {
 	const QUERY_UPDATE_START_TIME = "UPDATE Servicio_Pedido SET FechaEmpezado = '%s' WHERE idServicioPedido = '%s';";
 	const QUERY_UPDATE_SERVICE = "UPDATE Servicio_Pedido SET idStatus = '%s' WHERE idServicioPedido = '%s';";
   const QUERY_READ_SERVICE =
-		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
-		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
-		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
-		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
-		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.idCliente AS idCliente, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion 
+		"SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -62,43 +63,17 @@ class DataBaseService {
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
-		Servicio_Pedido.idLavador = Lavador.idLavador
+		Servicio_Pedido.idLavador = Lavador.idLavador 
+		LEFT JOIN Tiempo_Servicio ON
+		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
-		const QUERY_READ_ACTIVE_SERVICE_FOR_USER =
-		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
-		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio, Servicio_Pedido.idServicioPedido AS id,
-		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
-		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
-		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion
-		FROM Servicio_Pedido
-		LEFT JOIN Status ON
-		Servicio_Pedido.idStatus = Status.idStatus
-		LEFT JOIN Vehiculo ON
-		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
-		LEFT JOIN Servicio ON
-		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
-		LEFT JOIN Cliente ON
-		Servicio_Pedido.idCliente = Cliente.idCliente
-		LEFT JOIN Sesion_Cliente ON
-		Sesion_Cliente.idCliente = Cliente.idCliente
-		LEFT JOIN Lavador ON
-		Servicio_Pedido.idLavador = Lavador.idLavador
-		LEFT JOIN Sesion_Lavador ON
-		Sesion_Lavador.idLavador = Lavador.idLavador
-		WHERE Sesion_Cliente.Token = '%s'
-		AND Servicio_Pedido.idStatus != 5 
-		AND Servicio_Pedido.idStatus != 6
-		;";
 		const QUERY_READ_ACTIVE_SERVICE_FOR_CLEANER =
 		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio, Servicio_Pedido.idServicioPedido AS id,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
-		Servicio.Descripcion AS descripcion, Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
 		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente  
 		FROM Servicio_Pedido
@@ -118,6 +93,8 @@ class DataBaseService {
 		Servicio_Pedido.idLavador = Lavador.idLavador
 		LEFT JOIN Sesion_Lavador ON
 		Sesion_Lavador.idLavador = Lavador.idLavador
+		LEFT JOIN Tiempo_Servicio ON
+		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Sesion_Lavador.Token = '%s'
 		AND Servicio_Pedido.idStatus != 5 
 		AND Servicio_Pedido.idStatus != 6
@@ -133,26 +110,59 @@ class DataBaseService {
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
 		FROM Servicio_Pedido HAVING distance < '%s' 
 		AND idLavador IS NULL 
-		AND Servicio_Pedido.idStatus != 6 
+		AND Servicio_Pedido.idStatus != 6
+		AND Servicio_Pedido.idTransaccion IS NOT NULL 
 		ORDER BY distance
 		;";
 		const QUERY_UPDATE_CLEANER_PRODUCTS = "UPDATE Servicio_Pedido
-		LEFT JOIN Servicio ON
-		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Servicio_Usa_Producto ON
-		Servicio_Usa_Producto.idServicio = Servicio.idServicio
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Vehiculo_Usa_Producto ON
+		Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo
 		LEFT JOIN Producto ON
-		Producto.idProducto = Servicio_Usa_Producto.idProducto
+		Producto.idProducto = Vehiculo_Usa_Producto.idProducto
 		LEFT JOIN Lavador_Tiene_Producto ON
 		Lavador_Tiene_Producto.idProducto = Producto.idProducto AND Lavador_Tiene_Producto.idLavador = Servicio_Pedido.idLavador
-		SET Lavador_Tiene_Producto.Cantidad = Lavador_Tiene_Producto.Cantidad - Servicio_Usa_Producto.CantidadConsumida
+		SET Lavador_Tiene_Producto.Cantidad = Lavador_Tiene_Producto.Cantidad - Vehiculo_Usa_Producto.CantidadConsumida
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
-		const QUERY_SELECT_SERVICES_FOR_USER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
-		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
+		const QUERY_READ_ACTIVE_SERVICE_FOR_USER =
+		"SELECT Status.Status as status, Lavador.Nombre AS nombreLavador, Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador,
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio, Servicio_Pedido.idServicioPedido AS id,
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
-		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
+		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente, Servicio_Pedido.idTransaccion AS idTransaccion
+		FROM Servicio_Pedido
+		LEFT JOIN Status ON
+		Servicio_Pedido.idStatus = Status.idStatus
+		LEFT JOIN Vehiculo ON
+		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio
+		LEFT JOIN Tipo_Servicio ON
+		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
+		LEFT JOIN Cliente ON
+		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Sesion_Cliente ON
+		Sesion_Cliente.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Servicio_Pedido.idLavador = Lavador.idLavador
+		LEFT JOIN Sesion_Lavador ON
+		Sesion_Lavador.idLavador = Lavador.idLavador
+		LEFT JOIN Tiempo_Servicio ON
+		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
+		WHERE Sesion_Cliente.Token = '%s'
+		AND Servicio_Pedido.idStatus != 5 
+		AND Servicio_Pedido.idStatus != 6
+		;";
+		
+		const QUERY_SELECT_SERVICES_FOR_USER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -165,16 +175,20 @@ class DataBaseService {
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
-		Servicio_Pedido.idLavador = Lavador.idLavador
+		Servicio_Pedido.idLavador = Lavador.idLavador 
+		LEFT JOIN Tiempo_Servicio ON
+		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Cliente.idCliente = '%s'
-		AND fechaEmpezado IS NOT NULL
+		AND Servicio_Pedido.idTransaccion IS NOT NULL
+		AND Servicio_Pedido.idStatus != '6'
 		ORDER BY fechaEmpezado DESC
 		;";
 		
 		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
-		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,
-		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
-		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Celular AS celCliente
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -187,9 +201,10 @@ class DataBaseService {
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
-		Servicio_Pedido.idLavador = Lavador.idLavador
+		Servicio_Pedido.idLavador = Lavador.idLavador 
+		LEFT JOIN Tiempo_Servicio ON
+		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Lavador.idLavador = '%s'
-		AND fechaEmpezado IS NOT NULL
 		ORDER BY fechaEmpezado DESC
 		;";
 		
@@ -203,6 +218,8 @@ class DataBaseService {
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
+		
+		const QUERY_GET_USER_ID = "SELECT idCliente FROM Servicio_Pedido WHERE idServicioPedido = '%s';";
 	var $mysqli;
   
   public function __construct()
@@ -211,6 +228,15 @@ class DataBaseService {
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException("Error connecting with database");
   }
+		
+		function getUserId($idService)
+	{
+		$query = sprintf(DataBaseService::QUERY_GET_USER_ID,$idService);
+		if(!$result = $this->mysqli->query($query))
+			throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+		$line = $result->fetch_assoc();
+    return $line['idCliente'];
+	}
 		
 		public function readPushNotificationToken($serviceId)
 		{
@@ -398,6 +424,7 @@ class DataBaseService {
 			throw new serviceTakenException("Service taken");
 		
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_AVAILABLE_PRODUCTS, $cleanerId, $serviceId);
+
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed');
 		
