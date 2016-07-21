@@ -1,14 +1,17 @@
 <?php
 require_once dirname(__FILE__)."/../../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../../DBConnect/Car.php";
+require_once dirname(__FILE__)."/../../../../DBConnect/User.php";
 
-if (!isset($_POST['clientId']))
+if (!isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 try{
-  $clientId = SafeString::safe($_POST['clientId']);
+  $token = SafeString::safe($_POST['token']);
+  $user = new User();
+  $infoUser = $user->userHasToken($token);
   $car  = new Car();
-  $carsList = $car->getCarsList($clientId);
+  $carsList = $car->getCarsList($infoUser['idCliente']);
   echo json_encode(array("Status"=>"OK","carsList"=>$carsList));
 } catch(errorWithDatabaseException $e)
 {
@@ -17,5 +20,7 @@ try{
 catch(carsNotFoundException $e)
 {
   echo json_encode(array("Status"=>"OK","carsList"=>null));
+} catch (noSessionFoundException $e) {
+	echo json_encode(array("Status" => "SESSION ERROR"));
 }
 ?>

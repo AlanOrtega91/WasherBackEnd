@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Car.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 require_once dirname(__FILE__).'/../../../braintree/lib/Braintree.php';
@@ -28,6 +28,8 @@ try{
 } catch(carsNotFoundException $e)
 {
   echo json_encode(array("Status"=>"OK","carsList"=>null));
+} catch (noSessionFoundException $e) {
+	echo json_encode(array("Status" => "SESSION ERROR"));
 }
 
 function readClient($id){

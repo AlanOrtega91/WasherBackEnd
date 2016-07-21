@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 
 if (!isset($_POST['mail']) || !isset($_POST['newPassword']) || !isset($_POST['oldPassword']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
@@ -19,5 +19,5 @@ try{
 } catch(userNotFoundException $e)
 {
   echo json_encode(array("Status"=>"ERROR user"));
-}
+} 
 ?>

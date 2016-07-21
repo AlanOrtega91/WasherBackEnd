@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
+require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
 if (!isset($_POST['mail']) || !isset($_POST['password']))

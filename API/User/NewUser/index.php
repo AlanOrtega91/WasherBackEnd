@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail']) ||
     !isset($_POST['password']) || !isset($_POST['cel']))
@@ -28,7 +28,7 @@ try{
 {
   echo $e->getMessage();
   echo json_encode(array("Status"=>"ERROR DB"));
-}
+} 
 
 function uploadImage($idClient){
   $encoded_string = $_POST['encoded_string'];

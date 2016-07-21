@@ -1,19 +1,23 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
-if (!isset($_POST['cleanerId']) || !isset($_POST['latitud']) || !isset($_POST['longitud']))
+require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
+
+if (!isset($_POST['token']) || !isset($_POST['latitud']) || !isset($_POST['longitud']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
 
 try{
-  $cleanerId = SafeString::safe($_POST['cleanerId']);
+  $token = SafeString::safe($_POST['token']);
   $latitud = SafeString::safe($_POST['latitud']);
   $longitud = SafeString::safe($_POST['longitud']);
   $cleaner  = new Cleaner();
-  $cleanerInfo = $cleaner->updateLocation($cleanerId, $latitud, $longitud);
+  $cleanerInfo = $cleaner->userHasToken($token);
+  $cleanerInfo = $cleaner->updateLocation($cleanerInfo['idLavador'], $latitud, $longitud);
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));
+} catch (noSessionFoundException $e){
+	echo json_encode(array("Status" => "SESSION ERROR"));
 }
 ?>

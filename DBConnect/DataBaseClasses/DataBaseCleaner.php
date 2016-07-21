@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__)."/../DataBaseClasses/DataBase.php";
+require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseCleaner {
   
   const QUERY_READ_USER = "SELECT * FROM Lavador WHERE Mail='%s' AND Password = MD5('%s');";
@@ -13,7 +13,10 @@ class DataBaseCleaner {
 	WHERE idLavador = '%s'
 	;";
   const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Lavador LEFT JOIN Lavador WHERE Mail='%s';";
-  const QUERY_READ_SESSION = "SELECT idLavador FROM Sesion_Lavador WHERE Token='%s';";
+  const QUERY_READ_SESSION = "SELECT * FROM Sesion_Lavador 
+  		LEFT JOIN Lavador ON
+  		Sesion_Lavador.idLavador = Lavador.idLavador
+  		WHERE Token='%s';";
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Lavador (Token, idLavador) VALUES('%s', '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Mail = '%s');";
 	const QUERY_UPDATE_IMAGE = "UPDATE Lavador SET FotoURL = '%s' WHERE idLavador = '%s';";
@@ -109,9 +112,9 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
   {
     $query = sprintf(DataBaseCleaner::QUERY_READ_SESSION, $token);
 		if(!$result = $this->mysqli->query($query))
-			throw new sessionNotFoundException();
+			throw new errorWithDatabaseException();
 		if ($result->num_rows === 0 )
-			throw new cleanerNotFoundException("Cleaner not Found");
+			throw new noSessionFoundException("Cleaner not Found");
     return $result->fetch_assoc();
   }
 	

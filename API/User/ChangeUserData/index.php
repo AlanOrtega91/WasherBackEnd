@@ -1,15 +1,15 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 if (!isset($_POST['newName']) || !isset($_POST['newLastName']) ||
-    !isset($_POST['newMail']) || !isset($_POST['idClient']) || !isset($_POST['newCel']))
+    !isset($_POST['newMail']) || !isset($_POST['token']) || !isset($_POST['newCel']))
   die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $newName = SafeString::safe($_POST['newName']);
   $newLastName = SafeString::safe($_POST['newLastName']);
   $newMail = SafeString::safe($_POST['newMail']);
-  $idClient = SafeString::safe($_POST['idClient']);
+  $token = SafeString::safe($_POST['token']);
   $newCel =  SafeString::safe($_POST['newCel']);
   if(!isset($_POST['newBillingName']) || !isset($_POST['newRFC']) ||!isset($_POST['newBillingAddress'])){
     $newBillingName = null;
@@ -23,7 +23,8 @@ try{
   $image_name = "profile_image.jpg";
 
   $user  = new User();
-  $user->changeData($idClient,$newName, $newLastName,$newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress);
+  $infoUser = $user->userHasToken($token);
+  $user->changeData($infoUser['idCliente'],$newName, $newLastName,$newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress);
   
   if(isset($_POST['encoded_string']))
   {
@@ -34,6 +35,8 @@ try{
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));
+} catch (noSessionFoundException $e) {
+	echo json_encode(array("Status" => "SESSION ERROR"));
 }
 
 function uploadImage($idClient){
