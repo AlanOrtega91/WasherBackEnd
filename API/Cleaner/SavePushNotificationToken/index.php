@@ -1,16 +1,15 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/Cleaner.php";
 
-if (!isset($_POST['clientId']) || !isset($_POST['token']))
+if (!isset($_POST['cleanerId']) || !isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 try{
-  $clientId = SafeString::safe($_POST['clientId']);
+  $cleanerId = SafeString::safe($_POST['cleanerId']);
   $token = SafeString::safe($_POST['token']);
-
-  $user  = new User();
-  $user->savePushNotificationToken($clientId,$token);
+  $cleaner  = new Cleaner();
+  $cleaner->savePushNotificationToken($cleanerId,$token);
   echo json_encode(array("Status"=>"OK"));
 } catch(userNotFoundException $e)
 {

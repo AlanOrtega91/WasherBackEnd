@@ -19,6 +19,9 @@ class DataBaseCar {
 		Vehiculos_Favoritos.idVehiculo = Vehiculo.idVehiculo
 		WHERE idCliente = '%s'
 		;";
+		
+		const QUERY_UNSET_FAV_CAR = "UPDATE Vehiculos_Favoritos SET Favorito = 0 WHERE idCliente = '%s'";
+		const QUERY_SET_FAV_CAR = "UPDATE Vehiculos_Favoritos SET Favorito = 1 WHERE idVehiculoFavorito = '%s'";
     
     var $mysqli;
   
@@ -46,6 +49,16 @@ class DataBaseCar {
 	
 	public function updateCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$modelo,$marca){
 		$query = sprintf(DataBaseCar::QUERY_UPDATE_CAR,$vehiculoId,$color,$placas,$modelo,$marca,$vehiculoFavoritoId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+	}
+	
+	public function updateFavoriteCar($vehiculoFavoritoId,$clienteId){
+		$query = sprintf(DataBaseCar::QUERY_UNSET_FAV_CAR,$clienteId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+
+		$query = sprintf(DataBaseCar::QUERY_SET_FAV_CAR,$vehiculoFavoritoId);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
 	}

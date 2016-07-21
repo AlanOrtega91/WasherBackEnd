@@ -5,22 +5,23 @@ if (!isset($_POST['newName']) || !isset($_POST['newLastName']) ||
     !isset($_POST['newMail']) || !isset($_POST['idClient']) || !isset($_POST['newCel']))
   die(json_encode(array("Status"=>"ERROR missing values")));
   
-$newName = SafeString::safe($_POST['newName']);
-$newLastName = SafeString::safe($_POST['newLastName']);
-$newMail = SafeString::safe($_POST['newMail']);
-$idClient = SafeString::safe($_POST['idClient']);
-$newCel =  SafeString::safe($_POST['newCel']);
-if(!isset($_POST['newBillingName']) || !isset($_POST['newRFC']) ||!isset($_POST['newBillingAddress'])){
-  $newBillingName = "";
-  $newRFC = "";
-  $newBillingAddress = "";
-} else {
-  $newBillingName = SafeString::safe($_POST['newBillingName']);
-  $newRFC = SafeString::safe($_POST['newRFC']);
-  $newBillingAddress = SafeString::safe($_POST['newBillingAddress']);
-}
-$image_name = "profile_image.jpg";
 try{
+  $newName = SafeString::safe($_POST['newName']);
+  $newLastName = SafeString::safe($_POST['newLastName']);
+  $newMail = SafeString::safe($_POST['newMail']);
+  $idClient = SafeString::safe($_POST['idClient']);
+  $newCel =  SafeString::safe($_POST['newCel']);
+  if(!isset($_POST['newBillingName']) || !isset($_POST['newRFC']) ||!isset($_POST['newBillingAddress'])){
+    $newBillingName = null;
+    $newRFC = null;
+    $newBillingAddress = null;
+  } else {
+    $newBillingName = SafeString::safe($_POST['newBillingName']);
+    $newRFC = SafeString::safe($_POST['newRFC']);
+    $newBillingAddress = SafeString::safe($_POST['newBillingAddress']);
+  }
+  $image_name = "profile_image.jpg";
+
   $user  = new User();
   $user->changeData($idClient,$newName, $newLastName,$newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress);
   

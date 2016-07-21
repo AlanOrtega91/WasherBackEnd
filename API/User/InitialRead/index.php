@@ -7,10 +7,9 @@ require_once dirname(__FILE__).'/../../../braintree/lib/Braintree.php';
 
 if (!isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
-  
-$token = SafeString::safe($_POST['token']);
 
 try{
+  $token = SafeString::safe($_POST['token']);
   $user  = new User();
   $car  = new Car();
   $service  = new Service();

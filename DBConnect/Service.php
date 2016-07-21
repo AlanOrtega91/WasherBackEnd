@@ -94,8 +94,8 @@ class Service {
 				$message = $this->selectMessage($statusId, $line);
 				$row = $this->dataBase->readPushNotificationToken($serviceId);
 				$token = $row->fetch_assoc();
-				PushNotification::sendNotification($token['pushNotificationToken'],$message);
-				PushNotification::sendMessage($token['pushNotificationToken'],$message);
+				PushNotification::sendNotification(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
+				PushNotification::sendMessage(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
   }
 		
 		public function selectMessage($statusId,$line) {
@@ -150,6 +150,10 @@ class Service {
 			
 		return $cleanersList;
   }
+		
+		public function getCleanerLocation($cleanerId){
+				return $this->dataBase->readCleanerLocation($cleanerId);
+		}
 	
 	public function getServicesNearby($latitud, $longitud,$distance)
 	{
@@ -173,6 +177,7 @@ class Service {
 	public function acceptService($serviceId,$cleanerId)
 	{
 		$this->dataBase->updateServiceAccepted($serviceId,$cleanerId);
+		$this->changeServiceStatus($serviceId, 2);
 	}
 	
 	public function getPriceForCar($carId,$serviceId,$typeOfServiceId)

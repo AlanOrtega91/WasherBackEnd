@@ -4,10 +4,10 @@ require_once dirname(__FILE__)."/../../../../DBConnect/Product.php";
 if (!isset($_POST['cleanerId']) || !isset($_POST['productId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
-$cleanerId = SafeString::safe($_POST['cleanerId']);
-$productId = SafeString::safe($_POST['productId']);
 
 try{
+  $cleanerId = SafeString::safe($_POST['cleanerId']);
+  $productId = SafeString::safe($_POST['productId']);
   $product  = new Product();
   $product->refillProduct($productId,$cleanerId);
   echo json_encode(array("Status"=>"OK"));

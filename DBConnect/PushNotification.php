@@ -9,7 +9,7 @@ class PushNotification{
 																															"icon" => "default",
 																															"sound" => "default"
 																															),
-							'to' => $token
+							'registration_ids' => $token
 						);
 						$headers = array(
 									'Authorization:key = AIzaSyAKHM3MoMACjmeVK46TDg8-rTj1KoVjzWs',
@@ -36,7 +36,7 @@ class PushNotification{
 						$url = 'https://fcm.googleapis.com/fcm/send';
 						$fields = array(
 							"data" => $message,
-							'to' => $token
+							'registration_ids' => $token
 						);
 						$headers = array(
 									'Authorization:key = AIzaSyAKHM3MoMACjmeVK46TDg8-rTj1KoVjzWs',

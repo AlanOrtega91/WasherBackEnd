@@ -6,9 +6,9 @@ require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 if (!isset($_POST['mail']) || !isset($_POST['password']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
-$mail = SafeString::safe($_POST['mail']);
-$password = SafeString::safe($_POST['password']);
 try{
+  $mail = SafeString::safe($_POST['mail']);
+  $password = SafeString::safe($_POST['password']);
   $cleaner  = new Cleaner();
   $service  = new Service();
   $cleanerInfo = $cleaner->sendLogIn($mail, $password);

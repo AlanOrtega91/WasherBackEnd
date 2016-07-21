@@ -5,9 +5,8 @@ require_once dirname(__FILE__)."/../../../DBConnect/UsuariosClasses/User.php";
 if (!isset($_POST['mail']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
-
-$mail = SafeString::safe($_POST['mail']);
 try{
+  $mail = SafeString::safe($_POST['mail']);
   $user  = new User();
   $user->sendLogOut($mail);
   echo json_encode(array("Status"=>"OK"));

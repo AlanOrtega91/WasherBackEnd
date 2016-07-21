@@ -17,6 +17,10 @@ class DataBaseCleaner {
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Lavador (Token, idLavador) VALUES('%s', '%s');";
   const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Mail = '%s');";
 	const QUERY_UPDATE_IMAGE = "UPDATE Lavador SET FotoURL = '%s' WHERE idLavador = '%s';";
+	const QUERY_UPDATE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '%s' WHERE idLavador = '%s';";
+	const QUERY_DELETE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '' WHERE Mail = '%s';";
+const QUERY_DELETE_PNT = "UPDATE Lavador SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
+const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL WHERE Mail = '%s'";
 	var $mysqli;
   
   public function __construct()
@@ -26,12 +30,30 @@ class DataBaseCleaner {
 			throw new errorWithDatabaseException("Error connecting with database");
   }
   
-  /*public insertNewUser($name, $lastName, $mail, $password)
-  {
-    $query = sprintf(QUERY_INSERT_USER,$name, $lastName, $mail,$password);
-		mysql_query($query) or throw new errorWithDatabaseException(json_encode(array("Status"=>"ERROR")));
-  }
-  */
+  public function deletePushNotification($mail)
+		{
+				$query = sprintf(DataBaseCleaner::QUERY_DELETE_PNT_FOR_CLEANER,$mail);
+				if(!$this->mysqli->query($query))
+						throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		}
+		
+		public function updatePushNotificationToken($clientId,$token){
+		$query = sprintf(DataBaseCleaner::QUERY_DELETE_PNT,$token);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		
+		$query = sprintf(DataBaseCleaner::QUERY_UPDATE_PNT_FOR_CLEANER,$token,$clientId);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+		
+	}
+	
+	public function deleteLocation($mail){
+		$query = sprintf(DataBaseCleaner::QUERY_NULL_LOCATION,$mail);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
+	}
+	
   public function readUser($mail,$password)
   {
     $query = sprintf(DataBaseCleaner::QUERY_READ_USER, $mail, $password);

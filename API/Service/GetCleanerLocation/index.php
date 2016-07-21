@@ -2,16 +2,15 @@
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_POST['serviceId']) || !isset($_POST['statusId']))
+if (!isset($_POST['cleanerId']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
- 
-try{ 
-  $serviceId = SafeString::safe($_POST['serviceId']);
-  $statusId = SafeString::safe($_POST['statusId']);
+
+try{  
+  $cleanerId = SafeString::safe($_POST['cleanerId']);
 
   $service  = new Service();
-  $service->changeServiceStatus($serviceId, $statusId);
-  echo json_encode(array("Status"=>"OK"));
+  $cleaner = $service->getCleanerLocation($cleanerId);
+  echo json_encode(array("Status"=>"OK","cleaner" => $cleaner));
 } catch(errorWithDatabaseException $e)
 {
   echo $e->getMessage();

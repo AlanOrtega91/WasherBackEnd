@@ -34,13 +34,15 @@ class Cleaner {
 	{
 		$this->dataBase->updateLocation($idCleaner, $latitud, $longitud);
 	}
-/*private function addUser($name, ,$lastName, $mail, $password)
-	{
-		$dataBase->insertNewUser($name, $lastName, $mail, $password);
-		return createSession();
-	}*/
+
+function savePushNotificationToken($cleanerId,$token){
+		$this->dataBase->updatePushNotificationToken($cleanerId,$token);
+	}
+
 	function sendLogOut($mail)
 	{
+		$this->dataBase->deletePushNotification($mail);
+		$this->dataBase->deleteLocation($mail);
 		$this->dataBase->deleteSession($mail);
 	}
 	

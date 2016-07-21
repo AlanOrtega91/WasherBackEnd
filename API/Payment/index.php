@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__).'/../../braintree/lib/Braintree.php';
 require_once dirname(__FILE__).'/../../DBConnect/Service.php';
+require_once dirname(__FILE__)."/../../DBConnect/SafeString.php";
 
 Braintree_Configuration::environment('sandbox');
 Braintree_Configuration::merchantId('ncjjy77xdztwsny3');
@@ -10,8 +11,8 @@ Braintree_Configuration::privateKey('ab312b96bf5d161816b0f248779d04e3');
 if (!isset($_POST['operation']))
   die(json_encode(array("Satus"=>"ERROR missing values for operation")));
   
-$operation = $_POST['operation'];
 try{
+  $operation = SafeString::safe($_POST['operation']);
   switch($operation){
     case 'create':
       createUserInBrainTree();

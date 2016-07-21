@@ -7,13 +7,14 @@ if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail'
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 
-$name = SafeString::safe($_POST['name']);
-$lastName = SafeString::safe($_POST['lastName']);
-$mail = SafeString::safe($_POST['mail']);
-$password = SafeString::safe($_POST['password']);
-$cel = SafeString::safe($_POST['cel']);
-$image_name = "profile_image.jpg";
+
 try{
+  $name = SafeString::safe($_POST['name']);
+  $lastName = SafeString::safe($_POST['lastName']);
+  $mail = SafeString::safe($_POST['mail']);
+  $password = SafeString::safe($_POST['password']);
+  $cel = SafeString::safe($_POST['cel']);
+  $image_name = "profile_image.jpg";
   $user  = new User();
   $userInfo = $user->addUser($name, $lastName, $mail, $password,$cel);
   if(isset($_POST['encoded_string']))

@@ -36,11 +36,12 @@ class DataBaseService {
 	Lavador_Tiene_Producto.idProducto = Producto.idProducto
 	LEFT JOIN Lavador ON
 	Lavador.idLavador = Lavador_Tiene_Producto.idLavador
-	WHERE Lavador_Tiene_Producto.Cantidad >= Vehiculo_Usa_Producto.CantidadConsumida
+	WHERE (Lavador_Tiene_Producto.Cantidad - Vehiculo_Usa_Producto.CantidadConsumida) < 0
+ AND Vehiculo_Usa_Producto.CantidadConsumida > 0 
 	AND Lavador.idLavador = '%s'
 	AND Servicio_Pedido.idServicioPedido = '%s'
 	;";
-	const QUERY_UPDATE_SERVICE_ACCEPTED = "UPDATE Servicio_Pedido SET idStatus = 2, idLavador = '%s'
+	const QUERY_UPDATE_SERVICE_ACCEPTED = "UPDATE Servicio_Pedido SET idLavador = '%s'
 	WHERE idServicioPedido = '%s';
 	";
 	const QUERY_UPDATE_START_TIME = "UPDATE Servicio_Pedido SET FechaEmpezado = '%s' WHERE idServicioPedido = '%s';";
@@ -99,7 +100,7 @@ class DataBaseService {
 		AND Servicio_Pedido.idStatus != 5 
 		AND Servicio_Pedido.idStatus != 6
 		;";
-		const QUERY_READ_CLEANERS_LOCATION = "SELECT Nombre,PrimerApellido,Latitud,Longitud,
+		const QUERY_READ_CLEANERS_LOCATION = "SELECT idLavador, Nombre, PrimerApellido, Latitud, Longitud,
 		( 6371 * acos( cos( radians('%s') ) * cos( radians( Latitud ) ) * cos( radians( Longitud ) - radians('%s') ) +
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
 		FROM Lavador HAVING distance < '%s'
@@ -213,13 +214,18 @@ class DataBaseService {
 		const QUERY_READ_CLEANER_REVIEWS = "SELECT ROUND(AVG(Calificacion),1) AS Calificacion FROM Servicio_Pedido WHERE idLavador = '%d';";
 		const QUERY_UPDATE_TRANSACTION_ID = "UPDATE Servicio_Pedido SET idTransaccion = '%s'
 		WHERE idServicioPedido = '%s';";
-		const QUERY_READ_PUSH_NOTIFICATION_TOKEN = "SELECT pushNotificationToken From Cliente
+		const QUERY_READ_PUSH_NOTIFICATION_TOKEN = "
+		SELECT Cliente.pushNotificationToken AS pushNotificationTokenCliente, Lavador.pushNotificationToken AS pushNotificationTokenLavador
+		From Cliente
 		LEFT JOIN Servicio_Pedido ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
+		LEFT JOIN Lavador ON
+		Lavador.idLavador = Servicio_Pedido.idLavador 
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
 		const QUERY_GET_USER_ID = "SELECT idCliente FROM Servicio_Pedido WHERE idServicioPedido = '%s';";
+		const QUERY_GET_CLEANER_LOCATION = "SELECT idLavador, Latitud, Longitud FROM Lavador WHERE idLavador = '%s'";
 	var $mysqli;
   
   public function __construct()
@@ -228,6 +234,14 @@ class DataBaseService {
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException("Error connecting with database");
   }
+		
+		public function readCleanerLocation($cleanerId){
+				$query = sprintf(DataBaseService::QUERY_GET_CLEANER_LOCATION,$cleanerId);
+				if(!$result = $this->mysqli->query($query))
+						throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+				$line = $result->fetch_assoc();
+				return $line;
+		}
 		
 		function getUserId($idService)
 	{
@@ -424,11 +438,10 @@ class DataBaseService {
 			throw new serviceTakenException("Service taken");
 		
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_AVAILABLE_PRODUCTS, $cleanerId, $serviceId);
-
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed');
 		
-		if($result->num_rows === 0)
+		if($result->num_rows != 0)
 			throw new insufficientProductException("Not Enough Products");
 	}
 	

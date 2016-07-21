@@ -5,13 +5,13 @@ require_once dirname(__FILE__)."/../../../DBConnect/Car.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 require_once dirname(__FILE__).'/../../../braintree/lib/Braintree.php';
 
-
 if (!isset($_POST['mail']) || !isset($_POST['password']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
-$mail = SafeString::safe($_POST['mail']);
-$password = SafeString::safe($_POST['password']);
+
 try{
+  $mail = SafeString::safe($_POST['mail']);
+  $password = SafeString::safe($_POST['password']);
   $user  = new User();
   $car  = new Car();
   $service  = new Service();

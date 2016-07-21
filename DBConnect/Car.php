@@ -23,6 +23,10 @@ class Car {
 		$this->dataBase->deleteCar($favoriteCarId);
 	}
 	
+	public function setFavCar($vehiculoFavoritoId,$clienteId){
+		$this->dataBase->updateFavoriteCar($vehiculoFavoritoId,$clienteId);
+	}
+	
 	public function getCarsList($clientId)
 	{
 		$cars = $this->dataBase->readFavoriteCars($clientId);

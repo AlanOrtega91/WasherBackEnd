@@ -5,10 +5,9 @@ require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
 if (!isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
-  
-$token = SafeString::safe($_POST['token']);
 
 try{
+  $token = SafeString::safe($_POST['token']);
   $cleaner  = new Cleaner();
   $service  = new Service();
   $cleanerInfo = $cleaner->readCleanerData($token);
