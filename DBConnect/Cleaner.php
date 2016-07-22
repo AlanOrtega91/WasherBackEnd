@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__)."/../DataBaseClasses/DataBaseCleaner.php";
+require_once dirname(__FILE__)."/DataBaseClasses/DataBaseCleaner.php";
 class Cleaner {
 	/*
    * Todo lo comentado esta en espera de que el cliente diga el funcionamiento de nuevos lavadores
@@ -11,11 +11,11 @@ class Cleaner {
     $this->dataBase = new DataBaseCleaner();
 	}
 	
-  function sendLogIn($mail,$password)
+  function sendLogIn($email,$password)
 	{
-		$this->sendLogOut($mail);
-		$this->dataBase->readUser($mail, $password);
-		$token = $this->createSession($mail);
+		$this->sendLogOut($email);
+		$this->dataBase->readUser($email, $password);
+		$token = $this->createSession($email);
 		return $this->dataBase->readCleanerInfo($token);
 	}
 	
@@ -24,9 +24,9 @@ class Cleaner {
 		return $this->dataBase->readCleanerInfo($token);
 	}
 	
-	function createSession($mail)
+	function createSession($email)
 	{
-		$token = $this->dataBase->insertSession($mail);
+		$token = $this->dataBase->insertSession($email);
 		return $token;
 	}
 	
@@ -39,27 +39,22 @@ function savePushNotificationToken($cleanerId,$token){
 		$this->dataBase->updatePushNotificationToken($cleanerId,$token);
 	}
 
-	function sendLogOut($mail)
+	function sendLogOut($email)
 	{
-		$this->dataBase->deletePushNotification($mail);
-		$this->dataBase->deleteLocation($mail);
-		$this->dataBase->deleteSession($mail);
+		$this->dataBase->deletePushNotification($email);
+		$this->dataBase->deleteLocation($email);
+		$this->dataBase->deleteSession($email);
 	}
 	
 	public function saveImage($cleanerId, $imageName){
 		$this->dataBase->updateImage($cleanerId, $imageName);
 	}
 	
-	function changePassword($mail, $newPassword, $oldPassword)
+	function changePassword($email, $newPassword, $oldPassword)
 	{
-		$this->dataBase->readUser($mail, $oldPassword);
-		$this->dataBase->updatePassword($mail,$newPassword);
+		$this->dataBase->readUser($email, $oldPassword);
+		$this->dataBase->updatePassword($email,$newPassword);
 	}
-	
-	/*function changeData($newName, $newLastName, $newMail, $oldMail)
-	{
-		$this->dataBase->updateUser($newName, $newLastName, $newMail, $oldMail)
-	}*/
 	
 	function userHasToken($token)
 	{

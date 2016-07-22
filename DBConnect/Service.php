@@ -85,7 +85,7 @@ class Service {
 					date_default_timezone_set('America/Mexico_City');
 					$fecha = date("Y-m-d H:i:s");
 					$this->dataBase->updateStartTimeService($serviceId, $fecha);
-					$this->dataBase->removeCleanerProducts($serviceId);					
+					$this->dataBase->removeCleanerProducts($serviceId);		
 				}
 		
 				$this->dataBase->updateService($serviceId, $statusId);
@@ -115,31 +115,16 @@ class Service {
 		
 		function makePayment($serviceId){
 				$service = $this->dataBase->readService($serviceId);
+				$info = $service->getInfo($serviceId);
 				$line = $service->fetch_assoc();
+				$price = $line['precio'];
 				if($line['idTransaccion'] == null){
 						$idClient = $this->dataBase->getUserId($serviceId);
-						$this->makeTransaction($serviceId, $idClient);
+						$transactionId = Payment::makeTransaction($serviceId, $idClient);
+						$service->saveTransaction($precio,$transactionId);
 				}
 		}
 		
-		function makeTransaction($serviceId, $id)
-		{
-				Braintree_Configuration::environment('sandbox');
-				Braintree_Configuration::merchantId('ncjjy77xdztwsny3');
-				Braintree_Configuration::publicKey('dhhbskndbg9nmwk2');
-				Braintree_Configuration::privateKey('ab312b96bf5d161816b0f248779d04e3');
-				$info = $this->getInfo($serviceId);
-				$price = $info['precio'];
-				$Braintree_Transaction = Braintree_Transaction::sale(array(
-                                         'customerId' => $id,
-                                         'amount' => $price
-                                         ));
-				if(!$Braintree_Transaction->success)
-						throw new errorMakingPaymentException();
-				
-				$transactionId = $Braintree_Transaction->transaction->id;
-				$this->saveTransaction($serviceId,$transactionId);
-}
   
   public function getCleaners($latitud, $longitud,$distance)
   {

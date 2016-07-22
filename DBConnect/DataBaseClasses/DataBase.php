@@ -30,8 +30,6 @@ class serviceTakenException extends Exception {
 	}
 class insufficientProductException extends Exception {
 }
-class errorMakingPaymentException extends Exception {
-}
 class noSessionFoundException extends Exception {
 }
 ?>

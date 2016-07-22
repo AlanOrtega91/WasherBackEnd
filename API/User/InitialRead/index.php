@@ -2,8 +2,8 @@
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Car.php";
+require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
-require_once dirname(__FILE__).'/../../../braintree/lib/Braintree.php';
 
 if (!isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
@@ -18,7 +18,7 @@ try{
   $carsList = $car->getCarsList($clientId);
   $servicesHistory = $service->getHistory($clientId,1);
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo,
-                         "carsList"=>$carsList,"History"=>$servicesHistory,"cards" => readClient($clientId)));
+                         "carsList"=>$carsList,"History"=>$servicesHistory,"cards" => Payment::readClient($clientId)));
 } catch(userNotFoundException $e)
 {
   echo json_encode(array("Status"=>"ERROR user"));
@@ -32,20 +32,4 @@ try{
 	echo json_encode(array("Status" => "SESSION ERROR"));
 }
 
-function readClient($id){
-  Braintree_Configuration::environment('sandbox');
-  Braintree_Configuration::merchantId('ncjjy77xdztwsny3');
-  Braintree_Configuration::publicKey('dhhbskndbg9nmwk2');
-  Braintree_Configuration::privateKey('ab312b96bf5d161816b0f248779d04e3');
-  $BrainTree_Customer = Braintree_Customer::find($id);
-  $Credit_Cards = $BrainTree_Customer->creditCards;
-  if(count($Credit_Cards) <= 0)
-    return;
-  $Credit_Card = $Credit_Cards[0];
-  return array(
-               "cardName" => $Credit_Card->cardholderName,
-               "cardExpiration" => $Credit_Card->expirationDate,
-               "cardNumber" => $Credit_Card->maskedNumber
-               );
-}
 ?>

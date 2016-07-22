@@ -1,5 +1,7 @@
 <?php
-require_once dirname ( __FILE__ ) . "/../DataBaseClasses/DataBaseUser.php";
+require_once dirname ( __FILE__ ) . "/DataBaseClasses/DataBaseUser.php";
+require_once dirname ( __FILE__ ) . "/Payment.php";
+
 class User {
 	private $dataBase;
 	
@@ -12,34 +14,34 @@ class User {
 	function savePushNotificationToken($clientId, $token) {
 		$this->dataBase->updatePushNotificationToken ( $clientId, $token );
 	}
-	function sendLogIn($mail, $password) {
-		$this->sendLogOut ( $mail );
-		$this->dataBase->readUser ( $mail, $password );
-		$token = $this->createSession ( $mail );
+	function sendLogIn($email, $password) {
+		$this->sendLogOut ( $email );
+		$this->dataBase->readUser ( $email, $password );
+		$token = $this->createSession ( $email );
 		
 		return $this->dataBase->readUserInfo ( $token );
 	}
-	function createSession($mail) {
-		$token = $this->dataBase->insertSession ( $mail );
+	function createSession($email) {
+		$token = $this->dataBase->insertSession ( $email );
 		return $token;
 	}
-	function addUser($name, $lastName, $mail, $password, $cel) {
-		$this->dataBase->insertNewUser ( $name, $lastName, $mail, $password, $cel );
-		return $this->sendLogIn ( $mail, $password );
+	function addUser($name, $lastName, $email, $password, $cel) {
+		$this->dataBase->insertNewUser ( $name, $lastName, $email, $password, $cel );
+		return $this->sendLogIn ( $email, $password );
 	}
-	function sendLogOut($mail) {
-		$this->dataBase->deletePushNotification ( $mail );
-		$this->dataBase->deleteSession ( $mail );
+	function sendLogOut($email) {
+		$this->dataBase->deletePushNotification ( $email );
+		$this->dataBase->deleteSession ( $email );
 	}
 	public function saveImage($userId, $imageName) {
 		$this->dataBase->updateImage ( $userId, $imageName );
 	}
-	function changePassword($mail, $newPassword, $oldPassword) {
-		$this->dataBase->readUser ( $mail, $oldPassword );
-		$this->dataBase->updatePassword ( $mail, $newPassword );
+	function changePassword($email, $newPassword, $oldPassword) {
+		$this->dataBase->readUser ( $email, $oldPassword );
+		$this->dataBase->updatePassword ( $email, $newPassword );
 	}
-	function changeData($idClient, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress) {
-		$this->dataBase->updateUser ( $idClient, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress );
+	function changeData($idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
+		$this->dataBase->updateUser ( $idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress );
 	}
 	function userHasToken($token) {
 		return $this->dataBase->readSession ( $token );

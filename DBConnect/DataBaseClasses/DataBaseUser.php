@@ -1,27 +1,27 @@
 <?php
 require_once dirname ( __FILE__ ) . "/DataBase.php";
 class DataBaseUser {
-	const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Mail = '%s' AND Password = MD5('%s');";
+	const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Email = '%s' AND Password = MD5('%s');";
 	const QUERY_READ_USER_INFO = "SELECT * FROM Cliente
 	LEFT JOIN Sesion_Cliente ON
 	Cliente.idCliente = Sesion_Cliente.idCliente
 	WHERE Token = '%s';";
-	const QUERY_GET_USER_ID = "SELECT idCliente FROM Cliente WHERE Mail = '%s';";
-	const QUERY_UPDATE_USER = "UPDATE Cliente SET Nombre = '%s', PrimerApellido = '%s', Celular = '%s', Mail = '%s',
+	const QUERY_GET_USER_ID = "SELECT idCliente FROM Cliente WHERE Email = '%s';";
+	const QUERY_UPDATE_USER = "UPDATE Cliente SET Nombre = '%s', PrimerApellido = '%s', Telefono = '%s', Email = '%s',
 			NombreFactura = '%s', RFC = '%s', DireccionFactura = '%s' 
 			WHERE idCliente = '%s'";
-	const QUERY_UPDATE_PASSWORD = "UPDATE Cliente SET Password = MD5('%s') WHERE Mail = '%s'";
-	const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Cliente LEFT JOIN Cliente WHERE Mail='%s'";
+	const QUERY_UPDATE_PASSWORD = "UPDATE Cliente SET Password = MD5('%s') WHERE Email = '%s'";
+	const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Cliente LEFT JOIN Cliente WHERE Email='%s'";
 	const QUERY_READ_SESSION = "SELECT * FROM Sesion_Cliente
   		LEFT JOIN Cliente ON
   		Sesion_Cliente.idCliente = Cliente.idCliente
   		WHERE Token='%s';";
 	const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Cliente (Token, idCliente) VALUES('%s', '%s');";
-	const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Mail, Password, Celular) VALUES ('%s', '%s', '%s', MD5('%s'), '%s');";
+	const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Email, Password, Telefono) VALUES ('%s', '%s', '%s', MD5('%s'), '%s');";
 	const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Cliente WHERE idCliente = '%s';";
 	const QUERY_UPDATE_IMAGE = "UPDATE Cliente SET FotoURL = '%s' WHERE idCliente = '%s';";
 	const QUERY_UPDATE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '%s' WHERE idCliente = '%s';";
-	const QUERY_DELETE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '' WHERE Mail = '%s';";
+	const QUERY_DELETE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '' WHERE Email = '%s';";
 	const QUERY_DELETE_PNT = "UPDATE Cliente SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
 	var $mysqli;
 	public function __construct() {
@@ -29,13 +29,13 @@ class DataBaseUser {
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException ( "Error connecting with database" );
 	}
-	public function deletePushNotification($mail) {
-		$query = sprintf ( DataBaseUser::QUERY_DELETE_PNT_FOR_CLIENT, $mail );
+	public function deletePushNotification($email) {
+		$query = sprintf ( DataBaseUser::QUERY_DELETE_PNT_FOR_CLIENT, $email );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
 	}
-	public function insertNewUser($name, $lastName, $mail, $password, $cel) {
-		$query = sprintf ( DataBaseUser::QUERY_INSERT_USER, $name, $lastName, $mail, $password, $cel );
+	public function insertNewUser($name, $lastName, $email, $password, $cel) {
+		$query = sprintf ( DataBaseUser::QUERY_INSERT_USER, $name, $lastName, $email, $password, $cel );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
 	}
@@ -48,8 +48,8 @@ class DataBaseUser {
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
 	}
-	public function readUser($mail, $password) {
-		$query = sprintf ( DataBaseUser::QUERY_READ_USER, $mail, $password );
+	public function readUser($email, $password) {
+		$query = sprintf ( DataBaseUser::QUERY_READ_USER, $email, $password );
 		if (! ($result = $this->mysqli->query ( $query )))
 			throw new errorWithDatabaseException ( 'Query failed = ' . mysql_error () );
 		$rows = $result->fetch_assoc ();
@@ -66,22 +66,22 @@ class DataBaseUser {
 			throw new userNotFoundException ( "User not found" );
 		return $rows;
 	}
-	public function insertSession($mail) {
+	public function insertSession($email) {
 		$token = md5 ( uniqid ( mt_rand (), true ) );
-		$query = sprintf ( DataBaseUser::QUERY_INSERT_SESSION, $token, $this->getUserId ( $mail ) );
+		$query = sprintf ( DataBaseUser::QUERY_INSERT_SESSION, $token, $this->getUserId ( $email ) );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( 'Query failed: ' . $this->mysqli->error );
 		return $token;
 	}
-	function getUserId($mail) {
-		$query = sprintf ( DataBaseUser::QUERY_GET_USER_ID, $mail );
+	function getUserId($email) {
+		$query = sprintf ( DataBaseUser::QUERY_GET_USER_ID, $email );
 		if (! $result = $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( 'Query failed: ' . $this->mysqli->error );
 		$line = $result->fetch_assoc ();
 		return $line ['idCliente'];
 	}
-	public function getToken($mail) {
-		$query = sprintf ( DataBaseUser::QUERY_GET_SESSION, $mail );
+	public function getToken($email) {
+		$query = sprintf ( DataBaseUser::QUERY_GET_SESSION, $email );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( 'Query failed = ' . mysql_error () );
 		if (! ($result = $this->mysqli->query ( $query )))
@@ -96,8 +96,8 @@ class DataBaseUser {
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}
-	public function deleteSession($mail) {
-		$query = sprintf ( DataBaseUser::QUERY_DELETE_SESSION, $this->getUserId ( $mail ) );
+	public function deleteSession($email) {
+		$query = sprintf ( DataBaseUser::QUERY_DELETE_SESSION, $this->getUserId ( $email ) );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}
@@ -109,15 +109,16 @@ class DataBaseUser {
 		if ($result->num_rows === 0)
 			throw new noSessionFoundException ( "No session found" );
 		
-		return true;
+		return $result->fetch_assoc();
 	}
-	public function updatePassword($mail, $password) {
-		$query = sprintf ( DataBaseUser::QUERY_UPDATE_PASSWORD, $password, $mail );
+	public function updatePassword($email, $password) {
+		$query = sprintf ( DataBaseUser::QUERY_UPDATE_PASSWORD, $password, $email );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}
-	public function updateUser($idClient, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress) {
-		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newCel, $newMail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
+	public function updateUser($idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
+		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
+		echo $query;
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}

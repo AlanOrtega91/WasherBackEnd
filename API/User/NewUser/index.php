@@ -1,8 +1,9 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/User.php";
+require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 
-if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail']) ||
+if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['email']) ||
     !isset($_POST['password']) || !isset($_POST['cel']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
@@ -11,24 +12,29 @@ if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['mail'
 try{
   $name = SafeString::safe($_POST['name']);
   $lastName = SafeString::safe($_POST['lastName']);
-  $mail = SafeString::safe($_POST['mail']);
+  $email = SafeString::safe($_POST['email']);
   $password = SafeString::safe($_POST['password']);
   $cel = SafeString::safe($_POST['cel']);
   $image_name = "profile_image.jpg";
   $user  = new User();
-  $userInfo = $user->addUser($name, $lastName, $mail, $password,$cel);
+  $userInfo = $user->addUser($name, $lastName, $email, $password,$cel);
   if(isset($_POST['encoded_string']))
   {
     uploadImage($userInfo['idCliente']);
     $user->saveImage($userInfo['idCliente'], $image_name);
   }
-  $userInfo = $user->sendLogIn($mail,$password);
+  $userInfo = $user->sendLogIn($email,$password);
+  Payment::createUserInBrainTree($userInfo['idCliente'], $name, $lastName, $email, $cel);
+  
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo));
 } catch(errorWithDatabaseException $e)
 {
   echo $e->getMessage();
   echo json_encode(array("Status"=>"ERROR DB"));
-} 
+} catch(errorCreatingUserPaymentException $e)
+{
+  echo json_encode(array("Status"=>"CREATE PAYMENT ACCOUNT ERROR","User Info"=>$userInfo));
+}
 
 function uploadImage($idClient){
   $encoded_string = $_POST['encoded_string'];

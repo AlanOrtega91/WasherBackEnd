@@ -3,15 +3,15 @@ require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 
-if (!isset($_POST['mail']) || !isset($_POST['password']))
+if (!isset($_POST['email']) || !isset($_POST['password']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
 try{
-  $mail = SafeString::safe($_POST['mail']);
+  $email = SafeString::safe($_POST['email']);
   $password = SafeString::safe($_POST['password']);
   $cleaner  = new Cleaner();
   $service  = new Service();
-  $cleanerInfo = $cleaner->sendLogIn($mail, $password);
+  $cleanerInfo = $cleaner->sendLogIn($email, $password);
   $cleanerId = $cleanerInfo['idLavador'];
   $review = $service->readReviewForCleaner($cleanerId);
   $servicesHistory = $service->getHistory($cleanerId,2);

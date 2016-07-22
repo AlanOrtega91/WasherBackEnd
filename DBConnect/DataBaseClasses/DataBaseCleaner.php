@@ -2,28 +2,28 @@
 require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseCleaner {
   
-  const QUERY_READ_USER = "SELECT * FROM Lavador WHERE Mail='%s' AND Password = MD5('%s');";
+  const QUERY_READ_USER = "SELECT * FROM Lavador WHERE Email='%s' AND Password = MD5('%s');";
 	const QUERY_READ_USER_INFO = "SELECT * FROM Lavador
 	LEFT JOIN Sesion_Lavador ON
 	Lavador.idLavador = Sesion_Lavador.idLavador
 	WHERE Token = '%s';";
-	const QUERY_GET_USER_ID = "SELECT idLavador FROM Lavador WHERE Mail = '%s';";
-	const QUERY_UPDATE_PASSWORD = "UPDATE Lavador SET Password = MD5('%s') WHERE Mail = '%s';";
+	const QUERY_GET_USER_ID = "SELECT idLavador FROM Lavador WHERE Email = '%s';";
+	const QUERY_UPDATE_PASSWORD = "UPDATE Lavador SET Password = MD5('%s') WHERE Email = '%s';";
 	const QUERY_UPDATE_LOCATION = "UPDATE Lavador SET Latitud = '%s', Longitud = '%s'
 	WHERE idLavador = '%s'
 	;";
-  const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Lavador LEFT JOIN Lavador WHERE Mail='%s';";
+  const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Lavador LEFT JOIN Lavador WHERE Email='%s';";
   const QUERY_READ_SESSION = "SELECT * FROM Sesion_Lavador 
   		LEFT JOIN Lavador ON
   		Sesion_Lavador.idLavador = Lavador.idLavador
   		WHERE Token='%s';";
   const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Lavador (Token, idLavador) VALUES('%s', '%s');";
-  const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Mail = '%s');";
+  const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Lavador WHERE idLavador = (SELECT idLavador FROM Lavador WHERE Email = '%s');";
 	const QUERY_UPDATE_IMAGE = "UPDATE Lavador SET FotoURL = '%s' WHERE idLavador = '%s';";
 	const QUERY_UPDATE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '%s' WHERE idLavador = '%s';";
-	const QUERY_DELETE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '' WHERE Mail = '%s';";
+	const QUERY_DELETE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '' WHERE Email = '%s';";
 const QUERY_DELETE_PNT = "UPDATE Lavador SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
-const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL WHERE Mail = '%s'";
+const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL WHERE Email = '%s'";
 	var $mysqli;
   
   public function __construct()
@@ -33,9 +33,9 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
 			throw new errorWithDatabaseException("Error connecting with database");
   }
   
-  public function deletePushNotification($mail)
+  public function deletePushNotification($email)
 		{
-				$query = sprintf(DataBaseCleaner::QUERY_DELETE_PNT_FOR_CLEANER,$mail);
+				$query = sprintf(DataBaseCleaner::QUERY_DELETE_PNT_FOR_CLEANER,$email);
 				if(!$this->mysqli->query($query))
 						throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
 		}
@@ -51,15 +51,15 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
 		
 	}
 	
-	public function deleteLocation($mail){
-		$query = sprintf(DataBaseCleaner::QUERY_NULL_LOCATION,$mail);
+	public function deleteLocation($email){
+		$query = sprintf(DataBaseCleaner::QUERY_NULL_LOCATION,$email);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("Could not create new user ".$this->mysqli->error);
 	}
 	
-  public function readUser($mail,$password)
+  public function readUser($email,$password)
   {
-    $query = sprintf(DataBaseCleaner::QUERY_READ_USER, $mail, $password);
+    $query = sprintf(DataBaseCleaner::QUERY_READ_USER, $email, $password);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed = '. mysql_error());
 		$rows = $result->fetch_assoc();
@@ -68,20 +68,20 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
     return $result;
   }
   
-  public function insertSession($mail)
+  public function insertSession($email)
   {
 		
     $token = md5(uniqid(mt_rand(), true));
-				$query = sprintf(DataBaseCleaner::QUERY_INSERT_SESSION,$token, $this->getCleanerId($mail));
+				$query = sprintf(DataBaseCleaner::QUERY_INSERT_SESSION,$token, $this->getCleanerId($email));
 				if(!$this->mysqli->query($query))
 						throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
 	
     return $token;
   }
   
-  public function getToken($mail)
+  public function getToken($email)
   {
-    $query = sprintf(DataBaseCleaner::QUERY_GET_SESSION, $mail);
+    $query = sprintf(DataBaseCleaner::QUERY_GET_SESSION, $email);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException('Query failed = '. mysql_error());
 		if(!($result = $this->mysqli->query($query)))
@@ -92,18 +92,18 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
     return $result;
   }
 	
-	function getCleanerId($mail)
+	function getCleanerId($email)
 	{
-		$query = sprintf(DataBaseCleaner::QUERY_GET_USER_ID,$mail);
+		$query = sprintf(DataBaseCleaner::QUERY_GET_USER_ID,$email);
 		if(!$result = $this->mysqli->query($query))
 			throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
 		$line = $result->fetch_assoc();
     return $line['idLavador'];
 	}
   
-  public function deleteSession($mail)
+  public function deleteSession($email)
   {
-    $query = sprintf(DataBaseCleaner::QUERY_DELETE_SESSION, $mail);
+    $query = sprintf(DataBaseCleaner::QUERY_DELETE_SESSION, $email);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("ERROR");
   }
@@ -143,9 +143,9 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
 			throw new errorWithDatabaseException("ERROR");
 	}
 	
-	public function updatePassword($mail, $password)
+	public function updatePassword($email, $password)
 	{
-		$query = sprintf(DataBaseCleaner::QUERY_UPDATE_PASSWORD, $password, $mail);
+		$query = sprintf(DataBaseCleaner::QUERY_UPDATE_PASSWORD, $password, $email);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("ERROR");
 	}
