@@ -11,6 +11,7 @@ try{
   $password = SafeString::safe($_POST['password']);
   $cleaner  = new Cleaner();
   $service  = new Service();
+  
   $cleanerInfo = $cleaner->sendLogIn($email, $password);
   $cleanerId = $cleanerInfo['idLavador'];
   $review = $service->readReviewForCleaner($cleanerId);

@@ -25,8 +25,8 @@ class User {
 		$token = $this->dataBase->insertSession ( $email );
 		return $token;
 	}
-	function addUser($name, $lastName, $email, $password, $cel) {
-		$this->dataBase->insertNewUser ( $name, $lastName, $email, $password, $cel );
+	function addUser($name, $lastName, $email, $password, $phone) {
+		$this->dataBase->insertNewUser ( $name, $lastName, $email, $password, $phone );
 		return $this->sendLogIn ( $email, $password );
 	}
 	function sendLogOut($email) {
@@ -40,8 +40,8 @@ class User {
 		$this->dataBase->readUser ( $email, $oldPassword );
 		$this->dataBase->updatePassword ( $email, $newPassword );
 	}
-	function changeData($idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
-		$this->dataBase->updateUser ( $idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress );
+	function changeData($idClient, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
+		$this->dataBase->updateUser ( $idClient, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress );
 	}
 	function userHasToken($token) {
 		return $this->dataBase->readSession ( $token );

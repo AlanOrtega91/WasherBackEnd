@@ -16,7 +16,7 @@ try{
   	$user  = new User();
   	$info = $user->userHasToken($token);
   } catch (noSessionFoundException $e){
-  	$user  = new User();
+  	$cleaner  = new Cleaner();
   	$info = $cleaner->readCleanerData($token);
   }
   $service  = new Service();

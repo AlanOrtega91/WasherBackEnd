@@ -34,8 +34,8 @@ class DataBaseUser {
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
 	}
-	public function insertNewUser($name, $lastName, $email, $password, $cel) {
-		$query = sprintf ( DataBaseUser::QUERY_INSERT_USER, $name, $lastName, $email, $password, $cel );
+	public function insertNewUser($name, $lastName, $email, $password, $phone) {
+		$query = sprintf ( DataBaseUser::QUERY_INSERT_USER, $name, $lastName, $email, $password, $phone );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
 	}
@@ -116,9 +116,8 @@ class DataBaseUser {
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}
-	public function updateUser($idClient, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
-		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
-		echo $query;
+	public function updateUser($idClient, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
+		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
 	}

@@ -2,7 +2,7 @@
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 if (!isset($_POST['newName']) || !isset($_POST['newLastName']) ||
-    !isset($_POST['newEmail']) || !isset($_POST['token']) || !isset($_POST['newCel']))
+    !isset($_POST['newEmail']) || !isset($_POST['token']) || !isset($_POST['newPhone']))
   die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
@@ -10,7 +10,7 @@ try{
   $newLastName = SafeString::safe($_POST['newLastName']);
   $newEmail = SafeString::safe($_POST['newEmail']);
   $token = SafeString::safe($_POST['token']);
-  $newCel =  SafeString::safe($_POST['newCel']);
+  $newPhone =  SafeString::safe($_POST['newPhone']);
   if(!isset($_POST['newBillingName']) || !isset($_POST['newRFC']) ||!isset($_POST['newBillingAddress'])){
     $newBillingName = null;
     $newRFC = null;
@@ -24,7 +24,7 @@ try{
 
   $user  = new User();
   $infoUser = $user->userHasToken($token);
-  $user->changeData($infoUser['idCliente'],$newName, $newLastName,$newCel, $newEmail, $newBillingName, $newRFC, $newBillingAddress);
+  $user->changeData($infoUser['idCliente'],$newName, $newLastName,$newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress);
   
   if(isset($_POST['encoded_string']))
   {

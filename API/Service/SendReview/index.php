@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
+require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 
 if (!isset($_POST['serviceId']) || !isset($_POST['rating']) || !isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));

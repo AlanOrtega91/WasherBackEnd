@@ -113,15 +113,12 @@ class Service {
 				}
 		}
 		
-		function makePayment($serviceId){
-				$service = $this->dataBase->readService($serviceId);
-				$info = $service->getInfo($serviceId);
-				$line = $service->fetch_assoc();
+		function makePayment($serviceId, $idClient){
+				$line = $this->getInfo($serviceId);
 				$price = $line['precio'];
 				if($line['idTransaccion'] == null){
-						$idClient = $this->dataBase->getUserId($serviceId);
-						$transactionId = Payment::makeTransaction($serviceId, $idClient);
-						$service->saveTransaction($precio,$transactionId);
+						$transactionId = Payment::makeTransaction($price, $idClient);
+						$this->saveTransaction($serviceId,$transactionId);
 				}
 		}
 		
@@ -155,14 +152,15 @@ class Service {
 				date_default_timezone_set('America/Mexico_City');
 				$fecha = date("Y-m-d H:i:s");
     $idService = $this->dataBase->insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche);
-				$this->makePayment($idService);
+				$this->makePayment($idService,$idCliente);
 				return $idService;
   }
 	
-	public function acceptService($serviceId,$cleanerId)
+	public function acceptService($serviceId,$cleanerId,$token)
 	{
 		$this->dataBase->updateServiceAccepted($serviceId,$cleanerId);
 		$this->changeServiceStatus($serviceId, 2);
+		return $this->getActiveService($token, 2);
 	}
 	
 	public function getPriceForCar($carId,$serviceId,$typeOfServiceId)

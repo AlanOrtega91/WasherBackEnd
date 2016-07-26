@@ -14,8 +14,8 @@ try{
   $info = $cleaner->userHasToken($token);
   
   $service  = new Service();
-  $service->acceptService($serviceId,$info['idLavador']);
-  echo json_encode(array("Status"=>"OK"));
+  $info = $service->acceptService($serviceId,$info['idLavador'],$token);
+  echo json_encode(array("Status"=>"OK", "service info" => $info));
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));
