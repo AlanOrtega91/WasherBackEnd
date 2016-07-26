@@ -79,13 +79,16 @@ class Service {
 		return $review['Calificacion'];
 	}
   
-  public function changeServiceStatus($serviceId, $statusId)
+  public function changeServiceStatus($serviceId, $statusId, $timeOut)
   {
 				if ($statusId == 4) {
 					date_default_timezone_set('America/Mexico_City');
 					$fecha = date("Y-m-d H:i:s");
 					$this->dataBase->updateStartTimeService($serviceId, $fecha);
 					$this->dataBase->removeCleanerProducts($serviceId);		
+				}
+				if ($statusId == 6 && $timeOut != 1){
+					$this->checkForCancel($serviceId);
 				}
 		
 				$this->dataBase->updateService($serviceId, $statusId);
@@ -96,6 +99,14 @@ class Service {
 				$token = $row->fetch_assoc();
 				PushNotification::sendNotification(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
 				PushNotification::sendMessage(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
+  }
+  
+  public function checkForCancel($serviceId){
+  	 	$service = $this->dataBase->readService($serviceId);
+  	 	$info = $service->fetch_assoc();
+  	 	if ($info['idLavador'] != null)
+  	 		throw new serviceCantBeCanceled();
+		
   }
 		
 		public function selectMessage($statusId,$line) {
@@ -167,5 +178,7 @@ class Service {
 	{
 		return $this->dataBase->calculatePrice($carId, $typeOfServiceId, $serviceId);
 	}
+}
+class serviceCantBeCanceled extends Exception{
 }
 ?>

@@ -21,7 +21,7 @@ class DataBaseService {
 	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
 	;";
 	const QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_OPEN = "SELECT * FROM Servicio_Pedido
-	WHERE idServicioPedido = '%s' AND idLavador IS NULL
+	WHERE idServicioPedido = '%s' AND idLavador IS NULL AND idStatus != 6 
 	;";
 	const QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_AVAILABLE_PRODUCTS = "SELECT * FROM Servicio_Pedido
 	LEFT JOIN Servicio ON
@@ -37,7 +37,7 @@ class DataBaseService {
 	LEFT JOIN Lavador ON
 	Lavador.idLavador = Lavador_Tiene_Producto.idLavador
 	WHERE (Lavador_Tiene_Producto.Cantidad - Vehiculo_Usa_Producto.CantidadConsumida) < 0
- AND Vehiculo_Usa_Producto.CantidadConsumida > 0 
+ 	AND Vehiculo_Usa_Producto.CantidadConsumida > 0 
 	AND Lavador.idLavador = '%s'
 	AND Servicio_Pedido.idServicioPedido = '%s'
 	;";
@@ -104,7 +104,12 @@ class DataBaseService {
 		const QUERY_READ_CLEANERS_LOCATION = "SELECT idLavador, Nombre, PrimerApellido, Latitud, Longitud,
 		( 6371 * acos( cos( radians('%s') ) * cos( radians( Latitud ) ) * cos( radians( Longitud ) - radians('%s') ) +
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
-		FROM Lavador HAVING distance < '%s'
+		FROM Lavador 
+		WHERE idLavador NOT IN 
+				(
+				SELECT idLavador FROM Servicio_Pedido WHERE idStatus != 5 AND idStatus != 6 AND idLavador IS NOT NULL
+				)
+		HAVING distance < '%s'
 		ORDER BY distance
 		;";
 		const QUERY_READ_SERVICES_LOCATION = "SELECT *,
@@ -271,6 +276,7 @@ class DataBaseService {
 	public function readCleanersLocation($pointLatitud, $pointLongitud, $distance)
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_CLEANERS_LOCATION,$pointLatitud, $pointLongitud, $pointLatitud, $distance);
+		//echo $query;
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
 		

@@ -5,12 +5,14 @@ require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 
 
-if (!isset($_POST['serviceId']) || !isset($_POST['statusId']) || !isset($_POST['token']))
+if (!isset($_POST['serviceId']) || !isset($_POST['statusId']) || !isset($_POST['token']) 
+		|| !isset($_POST['timeOutCancel']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
  
 try{ 
   $serviceId = SafeString::safe($_POST['serviceId']);
   $statusId = SafeString::safe($_POST['statusId']);
+  $timeOut = SafeString::safe($_POST['timeOutCancel']);
   $token = SafeString::safe($_POST['token']);
   try{
   	$user  = new User();
@@ -20,7 +22,7 @@ try{
   	$info = $cleaner->readCleanerData($token);
   }
   $service  = new Service();
-  $service->changeServiceStatus($serviceId, $statusId);
+  $service->changeServiceStatus($serviceId, $statusId, $timeOut);
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {
@@ -28,5 +30,7 @@ try{
   echo json_encode(array("Status"=>"ERROR DB"));
 } catch (noSessionFoundException $e){
 	echo json_encode(array("Status" => "SESSION ERROR"));
+} catch (serviceCantBeCanceled $e){
+	echo json_encode(array("Status" => "CANCEL ERROR"));
 }
 ?>
