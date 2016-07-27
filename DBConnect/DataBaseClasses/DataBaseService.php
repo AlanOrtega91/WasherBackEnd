@@ -276,7 +276,6 @@ class DataBaseService {
 	public function readCleanersLocation($pointLatitud, $pointLongitud, $distance)
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_CLEANERS_LOCATION,$pointLatitud, $pointLongitud, $pointLatitud, $distance);
-		//echo $query;
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
 		
