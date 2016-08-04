@@ -29,8 +29,6 @@ try{
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB"));
-} catch (errorMakingPaymentException $e) {
-  echo json_encode(array("Status"=>"ERROR Payment"));
 } catch (noSessionFoundException $e){
   	echo json_encode(array("Status"=>"SESSION ERROR"));
   }

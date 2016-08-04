@@ -63,6 +63,17 @@ class Service {
 	
 	public function sendReview($serviceId,$rating){
 		$this->dataBase->updateReview($serviceId,$rating);
+		$line = $this->getInfo($serviceId);
+		$reviewRow = $this->dataBase->readReviewForCleaner($line['idLavador']);
+		$review = $reviewRow->fetch_assoc();
+		
+		$message = array("state" => "-1","rating" => $review['Calificacion']);
+		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
+		$token = $row->fetch_assoc ();
+		PushNotification::sendMessage ( array (
+				"1",
+				$token ['pushNotificationTokenLavador']
+		), $message );
 	}
   
   public function getStatus($serviceId)
@@ -78,28 +89,45 @@ class Service {
 		$review = $reviewRow->fetch_assoc();
 		return $review['Calificacion'];
 	}
-  
-  public function changeServiceStatus($serviceId, $statusId, $timeOut)
-  {
-				if ($statusId == 4) {
-					date_default_timezone_set('America/Mexico_City');
-					$fecha = date("Y-m-d H:i:s");
-					$this->dataBase->updateStartTimeService($serviceId, $fecha);
-					$this->dataBase->removeCleanerProducts($serviceId);		
-				}
-				if ($statusId == 6 && $timeOut != 1){
-					$this->checkForCancel($serviceId);
-				}
+	public function changeServiceStatus($serviceId, $statusId, $timeOut) {
+		if ($statusId == 4) {
+			date_default_timezone_set ( 'America/Mexico_City' );
+			$fecha = date ( "Y-m-d H:i:s" );
+			$this->dataBase->updateStartTimeService ( $serviceId, $fecha );
+			$this->dataBase->removeCleanerProducts ( $serviceId );
+		}
+		$line = $this->getInfo ( $serviceId );
+		if ($statusId == 6 && $timeOut != 1) {
+			$this->checkForCancel ( $serviceId );
+			try {
+				$this->makePayment ( $serviceId, $line ['idCliente'], 100 );
+			} catch ( errorMakingPaymentException $e ) {
+				$this->dataBase->blockUser($line['idCliente']);
+			}
+		}
+		if ($statusId == 5) {
+			try {
+				$this->makePayment ( $serviceId, $line ['idCliente'], $line ['precio'] );
+			} catch ( errorMakingPaymentException $e ) {
+				$this->dataBase->blockUser($line['idCliente']);
+			}
+		}
 		
-				$this->dataBase->updateService($serviceId, $statusId);
-				$service = $this->dataBase->readService($serviceId);
-				$line = $service->fetch_assoc();
-				$message = $this->selectMessage($statusId, $line);
-				$row = $this->dataBase->readPushNotificationToken($serviceId);
-				$token = $row->fetch_assoc();
-				PushNotification::sendNotification(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
-				PushNotification::sendMessage(array($token['pushNotificationTokenCliente'],$token['pushNotificationTokenLavador']),$message);
-  }
+		$this->dataBase->updateService ( $serviceId, $statusId );
+		$service = $this->dataBase->readService ( $serviceId );
+		$line = $service->fetch_assoc ();
+		$message = $this->selectMessage ( $statusId, $line );
+		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
+		$token = $row->fetch_assoc ();
+		PushNotification::sendNotification ( array (
+				$token ['pushNotificationTokenCliente'],
+				$token ['pushNotificationTokenLavador'] 
+		), $message );
+		PushNotification::sendMessage ( array (
+				$token ['pushNotificationTokenCliente'],
+				$token ['pushNotificationTokenLavador'] 
+		), $message );
+	}
   
   public function checkForCancel($serviceId){
   	 	$service = $this->dataBase->readService($serviceId);
@@ -124,9 +152,7 @@ class Service {
 				}
 		}
 		
-		function makePayment($serviceId, $idClient){
-				$line = $this->getInfo($serviceId);
-				$price = $line['precio'];
+		function makePayment($serviceId, $idClient, $price){
 				if($line['idTransaccion'] == null){
 						$transactionId = Payment::makeTransaction($price, $idClient);
 						$this->saveTransaction($serviceId,$transactionId);
@@ -163,7 +189,6 @@ class Service {
 				date_default_timezone_set('America/Mexico_City');
 				$fecha = date("Y-m-d H:i:s");
     $idService = $this->dataBase->insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche);
-				$this->makePayment($idService,$idCliente);
 				return $idService;
   }
 	

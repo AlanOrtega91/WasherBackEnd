@@ -117,8 +117,7 @@ class DataBaseService {
 		sin( radians('%s') ) * sin( radians( Latitud ) ) ) ) AS distance
 		FROM Servicio_Pedido HAVING distance < '%s' 
 		AND idLavador IS NULL 
-		AND Servicio_Pedido.idStatus != 6
-		AND Servicio_Pedido.idTransaccion IS NOT NULL 
+		AND Servicio_Pedido.idStatus != 6 
 		ORDER BY distance
 		;";
 		const QUERY_UPDATE_CLEANER_PRODUCTS = "UPDATE Servicio_Pedido
@@ -232,6 +231,7 @@ class DataBaseService {
 		
 		const QUERY_GET_USER_ID = "SELECT idCliente FROM Servicio_Pedido WHERE idServicioPedido = '%s';";
 		const QUERY_GET_CLEANER_LOCATION = "SELECT idLavador, Latitud, Longitud FROM Lavador WHERE idLavador = '%s'";
+		const QUERY_BLOCK_USER = "UPDATE Cliente SET block = 1 WHERE idCliente = '%s'";
 	var $mysqli;
   
   public function __construct()
@@ -271,6 +271,15 @@ class DataBaseService {
 		$query = sprintf(DataBaseService::QUERY_UPDATE_TRANSACTION_ID,$transactionId,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed');
+	}
+	
+	public function blockUser($idClient)
+	{
+		$query = sprintf(DataBaseService::QUERY_BLOCK_USER,$idClient);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+		
+			return $result;
 	}
 	
 	public function readCleanersLocation($pointLatitud, $pointLongitud, $distance)
