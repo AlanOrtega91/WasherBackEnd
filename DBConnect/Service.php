@@ -82,6 +82,11 @@ class Service {
 		return $review ['Calificacion'];
 	}
 	public function changeServiceStatus($serviceId, $statusId, $cancelCode) {
+		if ($statusId == 2){
+			date_default_timezone_set ( 'America/Mexico_City' );
+			$fecha = date ( "Y-m-d H:i:s" );
+			$this->dataBase->updateAcceptTimeService ( $serviceId, $fecha );
+		}
 		if ($statusId == 4) {
 			date_default_timezone_set ( 'America/Mexico_City' );
 			$fecha = date ( "Y-m-d H:i:s" );

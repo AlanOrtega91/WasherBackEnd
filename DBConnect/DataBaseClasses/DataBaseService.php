@@ -45,6 +45,7 @@ class DataBaseService {
 	WHERE idServicioPedido = '%s';
 	";
 	const QUERY_UPDATE_START_TIME = "UPDATE Servicio_Pedido SET FechaEmpezado = '%s' WHERE idServicioPedido = '%s';";
+	const QUERY_UPDATE_ACCEPT_TIME = "UPDATE Servicio_Pedido SET FechaAceptado = '%s' WHERE idServicioPedido = '%s';";
 	const QUERY_UPDATE_SERVICE = "UPDATE Servicio_Pedido SET idStatus = '%s' WHERE idServicioPedido = '%s';";
   const QUERY_READ_SERVICE =
 		"SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
@@ -52,7 +53,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
 		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, 
-  		Servicio_Pedido.idTransaccion AS idTransaccion, Cliente.idCliente AS idCliente
+  		Servicio_Pedido.idTransaccion AS idTransaccion, Cliente.idCliente AS idCliente, Servicio_Pedido.fechaAceptado AS fechaAceptado
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -169,7 +170,8 @@ class DataBaseService {
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente,
+				Servicio_Pedido.FechaAceptado AS fechaAceptado
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -414,6 +416,11 @@ class DataBaseService {
 		
     return $result;
   }
+	public function updateAcceptTimeService ( $serviceId, $fecha ){
+		$query = sprintf(DataBaseService::QUERY_UPDATE_ACCEPT_TIME,$fecha,$serviceId);
+		if(!($result = $this->mysqli->query($query)))
+			throw new errorWithDatabaseException('Query failed');
+	}
 	
 	public function updateStartTimeService($serviceId, $fecha)
 	{
