@@ -6,13 +6,13 @@ require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 
 
 if (!isset($_POST['serviceId']) || !isset($_POST['statusId']) || !isset($_POST['token']) 
-		|| !isset($_POST['timeOutCancel']))
+		|| !isset($_POST['cancelCode']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
  
 try{ 
   $serviceId = SafeString::safe($_POST['serviceId']);
   $statusId = SafeString::safe($_POST['statusId']);
-  $timeOut = SafeString::safe($_POST['timeOutCancel']);
+  $cancelCode = SafeString::safe($_POST['cancelCode']);
   $token = SafeString::safe($_POST['token']);
   try{
   	$user  = new User();
@@ -22,7 +22,7 @@ try{
   	$info = $cleaner->readCleanerData($token);
   }
   $service  = new Service();
-  $service->changeServiceStatus($serviceId, $statusId, $timeOut);
+  $service->changeServiceStatus($serviceId, $statusId, $cancelCode);
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {

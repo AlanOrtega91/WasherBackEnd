@@ -51,7 +51,8 @@ class DataBaseService {
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Servicio_Pedido.idTransaccion AS idTransaccion
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, 
+  		Servicio_Pedido.idTransaccion AS idTransaccion, Cliente.idCliente AS idCliente
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -185,7 +186,6 @@ class DataBaseService {
 		LEFT JOIN Tiempo_Servicio ON
 		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Cliente.idCliente = '%s'
-		AND Servicio_Pedido.idTransaccion IS NOT NULL
 		AND Servicio_Pedido.idStatus != '6'
 		ORDER BY fechaEmpezado DESC
 		;";
