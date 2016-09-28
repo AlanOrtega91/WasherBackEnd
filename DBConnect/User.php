@@ -14,6 +14,9 @@ class User {
 	function savePushNotificationToken($clientId, $token) {
 		$this->dataBase->updatePushNotificationToken ( $clientId, $token );
 	}
+	function saveConektaId($userId, $conektaId) {
+		$this->dataBase->updateConektaId($userId, $conektaId);
+	}
 	function sendLogIn($email, $password) {
 		$this->sendLogOut ( $email );
 		$this->dataBase->readUser ( $email, $password );

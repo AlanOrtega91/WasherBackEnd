@@ -3,16 +3,16 @@ require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 
-if (!isset($_POST['token']) || !isset ( $_POST ['nonceFromClient'] ))
+if (!isset($_POST['token']) || !isset ( $_POST ['cardToken'] ))
   die(json_encode(array("Satus"=>"ERROR missing values")));
 
 
 try{
-	$nonceFromClient = $_POST ['nonceFromClient'];
+	$cardToken = $_POST ['cardToken'];
 	$token = SafeString::safe($_POST['token']);
 	$user  = new User();
 	$info = $user->userHasToken($token);
-	$paymentToken = Payment::updatePaymentMethodForUser($info['idCliente'],$nonceFromClient);
+	$paymentToken = Payment::updatePaymentMethodForUser($info['idClienteConekta'],$cardToken);
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {

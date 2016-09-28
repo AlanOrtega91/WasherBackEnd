@@ -2,13 +2,13 @@
 require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseCleaner {
   
-  const QUERY_READ_USER = "SELECT * FROM Lavador WHERE Email='%s' AND Password = MD5('%s');";
+  const QUERY_READ_USER = "SELECT * FROM Lavador WHERE Email='%s' AND Password = SHA2(MD5(('%s')),512);";
 	const QUERY_READ_USER_INFO = "SELECT * FROM Lavador
 	LEFT JOIN Sesion_Lavador ON
 	Lavador.idLavador = Sesion_Lavador.idLavador
 	WHERE Token = '%s';";
 	const QUERY_GET_USER_ID = "SELECT idLavador FROM Lavador WHERE Email = '%s';";
-	const QUERY_UPDATE_PASSWORD = "UPDATE Lavador SET Password = MD5('%s') WHERE Email = '%s';";
+	const QUERY_UPDATE_PASSWORD = "UPDATE Lavador SET Password = SHA2(MD5(('%s')),512) WHERE Email = '%s';";
 	const QUERY_UPDATE_LOCATION = "UPDATE Lavador SET Latitud = '%s', Longitud = '%s'
 	WHERE idLavador = '%s'
 	;";

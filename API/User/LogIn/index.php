@@ -20,7 +20,7 @@ try{
   $carsList = $car->getCarsList($clientId);
   $servicesHistory = $service->getHistory($clientId,1);
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo,
-                         "carsList"=>$carsList,"History"=>$servicesHistory,"cards" => Payment::readClient($clientId)));
+                         "carsList"=>$carsList,"History"=>$servicesHistory,"cards" => Payment::readClient($userInfo["ConektaId"])));
 } catch(userNotFoundException $e)
 {
   echo json_encode(array("Status"=>"ERROR user"));

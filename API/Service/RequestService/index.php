@@ -6,7 +6,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 
 if (!isset($_POST['direccion']) || !isset($_POST['latitud']) || !isset($_POST['longitud']) ||
     !isset($_POST['idServicio']) || !isset($_POST['idTipoServicio']) ||
-    !isset($_POST['token']) || !isset($_POST['idCoche']))
+    !isset($_POST['token']) || !isset($_POST['idCoche']) || !isset($_POST['idCocheFavorito']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 
@@ -17,13 +17,14 @@ try{
   $idServicio = SafeString::safe($_POST['idServicio']);
   $idTipoServicio = SafeString::safe($_POST['idTipoServicio']);
   $idCoche = SafeString::safe($_POST['idCoche']);
+  $idCocheFavorito = SafeString::safe($_POST['idCocheFavorito']);
   $token = SafeString::safe($_POST['token']);
 
   $user  = new User();
   $clientInfo = $user->userHasToken($token);
   
   $service  = new Service();
-  $idService = $service->requestService($direccion, $latitud,$longitud,$idServicio,$clientInfo['idCliente'],$idTipoServicio,$idCoche);
+  $idService = $service->requestService($direccion, $latitud,$longitud,$idServicio,$clientInfo['idCliente'],$idTipoServicio,$idCoche, $idCocheFavorito);
   $info = $service->getInfo($idService);
   echo json_encode(array("Status"=>"OK","info"=>$info));
 } catch(errorWithDatabaseException $e)

@@ -9,6 +9,7 @@ class PushNotification {
 						"icon" => "default",
 						"sound" => "default" 
 				),
+				'priority' => 'high',
 				'registration_ids' => $token 
 		);
 		$headers = array (
@@ -35,6 +36,7 @@ class PushNotification {
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$fields = array (
 				"data" => $message,
+				'priority' => 'high',
 				'registration_ids' => $token 
 		);
 		$headers = array (

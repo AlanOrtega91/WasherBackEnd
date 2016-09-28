@@ -41,6 +41,8 @@ try{
 
 function uploadImage($idClient){
   $encoded_string = $_POST['encoded_string'];
+  $encoded_string = str_replace('data:image/jpg;base64,', '', $encoded_string);
+  $encoded_string = str_replace(' ', '+', $encoded_string);
   $image_name = "profile_image.jpg";
   $decoded_string = base64_decode($encoded_string);
   $directory = dirname(__FILE__).'/../../../images/users/'.$idClient;

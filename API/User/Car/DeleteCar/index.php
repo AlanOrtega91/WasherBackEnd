@@ -16,7 +16,7 @@ try{
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {
-  echo json_encode(array("Status"=>"ERROR DB"));
+  echo json_encode(array("Status"=>"ERROR DB". $e->getMessage()));
 } catch (noSessionFoundException $e) {
 	echo json_encode(array("Status" => "SESSION ERROR"));
 }

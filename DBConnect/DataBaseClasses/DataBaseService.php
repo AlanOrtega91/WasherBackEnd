@@ -17,8 +17,8 @@ class DataBaseService {
 	WHERE Tipo_Servicio.idTipoServicio = '%s'
 	;";
 	const QUERY_INSERT_SERVICE = "INSERT INTO Servicio_Pedido (FechaPedido, Direccion, Latitud, Longitud, Precio, idServicio,
-	idCliente, idTipoServicio, idVehiculo)
-	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+	idCliente, idTipoServicio, idVehiculo, idVehiculoFavorito)
+	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
 	;";
 	const QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_OPEN = "SELECT * FROM Servicio_Pedido
 	WHERE idServicioPedido = '%s' AND idLavador IS NULL AND idStatus != 6 
@@ -49,11 +49,16 @@ class DataBaseService {
 	const QUERY_UPDATE_SERVICE = "UPDATE Servicio_Pedido SET idStatus = '%s' WHERE idServicioPedido = '%s';";
   const QUERY_READ_SERVICE =
 		"SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
-		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
-		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
-		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
+		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, 
+  		Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
+		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, 
+  		Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
+		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, 
+  		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
 		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, 
-  		Servicio_Pedido.idTransaccion AS idTransaccion, Cliente.idCliente AS idCliente, Servicio_Pedido.fechaAceptado AS fechaAceptado
+  		Servicio_Pedido.idTransaccion AS idTransaccion, Cliente.idCliente AS idCliente, Servicio_Pedido.fechaAceptado AS fechaAceptado,
+  		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Modelo AS Modelo, Vehiculos_Favoritos.Marca AS Marca,
+  		Cliente.ConektaId
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
@@ -69,6 +74,8 @@ class DataBaseService {
 		Servicio_Pedido.idLavador = Lavador.idLavador 
 		LEFT JOIN Tiempo_Servicio ON
 		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
+  		LEFT JOIN Vehiculos_Favoritos ON
+  		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		WHERE Servicio_Pedido.idServicioPedido = '%s'
 		;";
 		
@@ -79,12 +86,15 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente    
+		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Tipo_Servicio.TipoServicio AS Tipo,    
+		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Modelo AS Modelo, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
 		LEFT JOIN Vehiculo ON
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Vehiculos_Favoritos ON
+		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
 		LEFT JOIN Tipo_Servicio ON
@@ -141,12 +151,15 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Servicio_Pedido.idTransaccion AS idTransaccion
+		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Servicio_Pedido.idTransaccion AS idTransaccion, Tipo_Servicio.TipoServicio AS Tipo,
+		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Modelo AS Modelo, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
 		LEFT JOIN Vehiculo ON
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Vehiculos_Favoritos ON
+		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
 		LEFT JOIN Tipo_Servicio ON
@@ -170,13 +183,16 @@ class DataBaseService {
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente,
-				Servicio_Pedido.FechaAceptado AS fechaAceptado
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, 
+		Servicio_Pedido.FechaAceptado AS fechaAceptado, Tipo_Servicio.TipoServicio AS Tipo,
+		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Modelo AS Modelo, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
 		LEFT JOIN Vehiculo ON
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Vehiculos_Favoritos ON
+		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
 		LEFT JOIN Tipo_Servicio ON
@@ -196,12 +212,15 @@ class DataBaseService {
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Tipo_Servicio.TipoServicio AS Tipo,
+		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Modelo AS Modelo, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
 		Servicio_Pedido.idStatus = Status.idStatus
 		LEFT JOIN Vehiculo ON
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Vehiculos_Favoritos ON
+		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
 		LEFT JOIN Tipo_Servicio ON
@@ -213,6 +232,7 @@ class DataBaseService {
 		LEFT JOIN Tiempo_Servicio ON
 		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Lavador.idLavador = '%s'
+		AND Servicio_Pedido.idStatus != '6'
 		ORDER BY fechaEmpezado DESC
 		;";
 		
@@ -311,9 +331,9 @@ class DataBaseService {
     return $result;
 	}
   
-	public function insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche)
+	public function insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche, $idCocheFavorito)
 	{
-		$query = sprintf(DataBaseService::QUERY_INSERT_SERVICE,$fecha,$direccion,$latitud,$longitud,$this->calculatePrice($idCoche, $idTipoServicio, $idServicio),$idServicio,$idCliente,$idTipoServicio,$idCoche);
+		$query = sprintf(DataBaseService::QUERY_INSERT_SERVICE,$fecha,$direccion,$latitud,$longitud,$this->calculatePrice($idCoche, $idTipoServicio, $idServicio),$idServicio,$idCliente,$idTipoServicio,$idCoche, $idCocheFavorito);
 		if(!($result = $this->mysqli->query($query)))
 			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
 		return $this->mysqli->insert_id;

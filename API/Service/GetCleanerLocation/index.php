@@ -13,7 +13,6 @@ try{
   $token = SafeString::safe($_POST['token']);
   $user  = new User();
   $info = $user->userHasToken($token);
-  
   $service  = new Service();
   $cleaner = $service->getCleanerLocation($cleanerId);
   echo json_encode(array("Status"=>"OK","cleaner" => $cleaner));

@@ -1,7 +1,6 @@
 <?php
 require_once dirname ( __FILE__ ) . "/DataBaseClasses/DataBaseService.php";
 require_once dirname ( __FILE__ ) . "/PushNotification.php";
-require_once dirname ( __FILE__ ) . '/../braintree/lib/Braintree.php';
 class Service {
 	private $dataBase;
 	public function __construct() {
@@ -97,7 +96,7 @@ class Service {
 		if ($statusId == 6) {
 			if ($cancelCode == 1) {
 				try {
-					$this->makePayment ( $serviceId, $line ['idCliente'], 100 );
+					$this->makePayment ( $serviceId, $line, 100 );
 				} catch ( errorMakingPaymentException $e ) {
 					$this->dataBase->blockUser ( $line ['idCliente'] );
 				}
@@ -110,7 +109,7 @@ class Service {
 		
 		if ($statusId == 5) {
 			try {
-				$this->makePayment ( $serviceId, $line ['idCliente'], $line ['precio'] );
+				$this->makePayment ( $serviceId, $line, $line ['precio'] );
 			} catch ( errorMakingPaymentException $e ) {
 				$this->dataBase->blockUser ( $line ['idCliente'] );
 			}
@@ -177,9 +176,9 @@ class Service {
 				);
 		}
 	}
-	function makePayment($serviceId, $idClient, $price) {
+	function makePayment($serviceId, $line, $price) {
 		if ($line ['idTransaccion'] == null) {
-			$transactionId = Payment::makeTransaction ( $price, $idClient );
+			$transactionId = Payment::makeTransaction ( $price, $line['ConektaId'], "Alan", "218371", "alan.ortega91@gmail.com" );
 			$this->saveTransaction ( $serviceId, $transactionId );
 		}
 	}
@@ -202,10 +201,10 @@ class Service {
 		
 		return $servicesList;
 	}
-	public function requestService($direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche) {
+	public function requestService($direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche, $idCocheFavorito) {
 		date_default_timezone_set ( 'America/Mexico_City' );
 		$fecha = date ( "Y-m-d H:i:s" );
-		$idService = $this->dataBase->insertService ( $fecha, $direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche );
+		$idService = $this->dataBase->insertService ( $fecha, $direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche , $idCocheFavorito);
 		return $idService;
 	}
 	public function acceptService($serviceId, $cleanerId, $token) {

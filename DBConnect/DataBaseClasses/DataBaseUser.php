@@ -1,7 +1,7 @@
 <?php
 require_once dirname ( __FILE__ ) . "/DataBase.php";
 class DataBaseUser {
-	const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Email = '%s' AND Password = MD5('%s');";
+	const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Email = '%s' AND Password = SHA2(MD5(('%s')),512);";
 	const QUERY_READ_USER_INFO = "SELECT * FROM Cliente
 	LEFT JOIN Sesion_Cliente ON
 	Cliente.idCliente = Sesion_Cliente.idCliente
@@ -10,19 +10,20 @@ class DataBaseUser {
 	const QUERY_UPDATE_USER = "UPDATE Cliente SET Nombre = '%s', PrimerApellido = '%s', Telefono = '%s', Email = '%s',
 			NombreFactura = '%s', RFC = '%s', DireccionFactura = '%s' 
 			WHERE idCliente = '%s'";
-	const QUERY_UPDATE_PASSWORD = "UPDATE Cliente SET Password = MD5('%s') WHERE Email = '%s'";
+	const QUERY_UPDATE_PASSWORD = "UPDATE Cliente SET Password = SHA2(MD5(('%s')),512) WHERE Email = '%s'";
 	const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Cliente LEFT JOIN Cliente WHERE Email='%s'";
 	const QUERY_READ_SESSION = "SELECT * FROM Sesion_Cliente
   		LEFT JOIN Cliente ON
   		Sesion_Cliente.idCliente = Cliente.idCliente
   		WHERE Token='%s';";
 	const QUERY_INSERT_SESSION = "INSERT INTO Sesion_Cliente (Token, idCliente) VALUES('%s', '%s');";
-	const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Email, Password, Telefono) VALUES ('%s', '%s', '%s', MD5('%s'), '%s');";
+	const QUERY_INSERT_USER = "INSERT INTO Cliente (Nombre, PrimerApellido, Email, Password, Telefono) VALUES ('%s', '%s', '%s', SHA2(MD5(('%s')),512), '%s');";
 	const QUERY_DELETE_SESSION = "DELETE FROM Sesion_Cliente WHERE idCliente = '%s';";
 	const QUERY_UPDATE_IMAGE = "UPDATE Cliente SET FotoURL = '%s' WHERE idCliente = '%s';";
 	const QUERY_UPDATE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '%s' WHERE idCliente = '%s';";
 	const QUERY_DELETE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '' WHERE Email = '%s';";
 	const QUERY_DELETE_PNT = "UPDATE Cliente SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
+	const QUERY_UPDATE_CONEKTA_ID = "UPDATE Cliente SET ConektaId = '%s' WHERE idcliente = '%s';";
 	var $mysqli;
 	public function __construct() {
 		$this->mysqli = new mysqli ( DataBase::DB_LINK, DataBase::DB_LOGIN, DataBase::DB_PASSWORD, DataBase::DB_NAME );
@@ -47,6 +48,12 @@ class DataBaseUser {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_PNT_FOR_CLIENT, $token, $clientId );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
+	}
+	
+	function updateConektaId($userId, $conektaId) {
+		$query = sprintf ( DataBaseUser::QUERY_UPDATE_CONEKTA_ID, $conektaId, $userId );
+		if (! $this->mysqli->query ( $query ))
+			throw new errorWithDatabaseException ( "Could not update conekta id " . $this->mysqli->error );
 	}
 	public function readUser($email, $password) {
 		$query = sprintf ( DataBaseUser::QUERY_READ_USER, $email, $password );

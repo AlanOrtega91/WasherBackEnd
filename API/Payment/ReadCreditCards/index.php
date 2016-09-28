@@ -11,7 +11,7 @@ try{
   $token = SafeString::safe($_POST['token']);
   $user  = new User();
   $info = $user->userHasToken($token);
-  $cards = Payment::readClient($info['idCliente']);
+  $cards = Payment::readClient($info['idClienteConekta']);
   echo json_encode(array("Status"=>"OK","cards" => $cards));
 } catch(errorWithDatabaseException $e)
 {
