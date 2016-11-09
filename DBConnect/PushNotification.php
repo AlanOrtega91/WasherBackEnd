@@ -4,9 +4,9 @@ class PushNotification {
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$fields = array (
 				'notification' => array (
-						"title" => "Vashen",
+						"title" => "Washer",
 						"body" => $message ['message'],
-						"icon" => "default",
+						"icon" => "appicon",
 						"sound" => "default" 
 				),
 				'priority' => 'high',

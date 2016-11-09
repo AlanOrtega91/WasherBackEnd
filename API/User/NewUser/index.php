@@ -29,7 +29,6 @@ try{
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo));
 } catch(errorWithDatabaseException $e)
 {
-  echo $e->getMessage();
   echo json_encode(array("Status"=>"ERROR DB"));
 } catch(errorCreatingUserPaymentException $e)
 {
