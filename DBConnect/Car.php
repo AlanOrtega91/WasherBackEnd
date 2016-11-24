@@ -9,13 +9,13 @@ class Car {
     $this->dataBase = new DataBaseCar();
 	}
   
-		public function addCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca)
+		public function addCar($vehiculoId,$clientId,$color,$placas,$marca)
 	{
-		return $this->dataBase->insertCar($vehiculoId,$clientId,$color,$placas,$modelo,$marca);
+		return $this->dataBase->insertCar($vehiculoId,$clientId,$color,$placas,$marca);
 	}
 	
-	public function editCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$modelo,$marca){
-		$this->dataBase->updateCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$modelo,$marca);
+	public function editCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$marca){
+		$this->dataBase->updateCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$marca);
 	}
 	
 	public function deleteCar($favoriteCarId)

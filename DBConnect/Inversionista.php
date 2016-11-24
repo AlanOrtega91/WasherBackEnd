@@ -38,13 +38,33 @@ class Investor {
 		return $this->dataBase->readSession ( $token );
 	}
 	
-	function readAllServices($token) {
-		$services = $this->dataBase->readAllServices ( $token );
+	function readCleanersForInvestor($token) {
+		$cleaners = $this->dataBase->readCleaners ( $token );
+		$cleanersList = array ();
+		while ( $cleaner = $cleaners->fetch_assoc () ) {
+			array_push ( $cleanersList, $cleaner );
+		}
+		return $cleanersList;
+	}
+	
+	function readServices($idCleaner, $date, $token){
+		$services = array();
+		if ($idCleaner == "" && $date == ""){
+			$services = $this->dataBase->readAllServices($token);
+		} else if ($idCleaner == "" && $date != "") {
+			$services = $this->dataBase->readAllServicesFilterDate($token, $date);
+		} else if  ($idCleaner != "" && $date == "") {
+			$services = $this->dataBase->readAllServicesFilterCleaner($token, $idCleaner);
+		}
+		else {
+			$services = $this->dataBase->readAllServicesFilterAll($token,$date,$idCleaner);
+		}
 		$servicesList = array ();
 		while ( $service = $services->fetch_assoc () ) {
 			array_push ( $servicesList, $service );
 		}
 		return $servicesList;
+		return $services;
 	}
 }
 ?>

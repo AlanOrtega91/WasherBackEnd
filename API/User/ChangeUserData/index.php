@@ -1,6 +1,8 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/User.php";
+header('Content-Type: text/html; charset=utf8');
+
 if (!isset($_POST['newName']) || !isset($_POST['newLastName']) ||
     !isset($_POST['newEmail']) || !isset($_POST['token']) || !isset($_POST['newPhone']))
   die(json_encode(array("Status"=>"ERROR missing values")));

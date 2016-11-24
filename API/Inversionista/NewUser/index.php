@@ -1,6 +1,7 @@
 <?php
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Inversionista.php";
+header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['email']) ||
     !isset($_POST['password']))

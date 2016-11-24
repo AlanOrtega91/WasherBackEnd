@@ -9,7 +9,7 @@ class DataBaseCleaner {
 	WHERE Token = '%s';";
 	const QUERY_GET_USER_ID = "SELECT idLavador FROM Lavador WHERE Email = '%s';";
 	const QUERY_UPDATE_PASSWORD = "UPDATE Lavador SET Password = SHA2(MD5(('%s')),512) WHERE Email = '%s';";
-	const QUERY_UPDATE_LOCATION = "UPDATE Lavador SET Latitud = '%s', Longitud = '%s'
+	const QUERY_UPDATE_LOCATION = "UPDATE Lavador SET Latitud = '%s', Longitud = '%s', UbicacionActualizada = NOW()
 	WHERE idLavador = '%s'
 	;";
   const QUERY_GET_SESSION = "SELECT Token FROM Sesion_Lavador LEFT JOIN Lavador WHERE Email='%s';";
@@ -31,6 +31,7 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
 		$this->mysqli = new mysqli(DataBase::DB_LINK,DataBase::DB_LOGIN,DataBase::DB_PASSWORD,DataBase::DB_NAME);
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException("Error connecting with database");
+		$this->mysqli->set_charset("utf8");
   }
   
   public function deletePushNotification($email)

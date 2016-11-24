@@ -2,6 +2,7 @@
 require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
+header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['token']))
   die(json_encode(array("Satus"=>"ERROR missing values")));

@@ -29,6 +29,7 @@ class DataBaseUser {
 		$this->mysqli = new mysqli ( DataBase::DB_LINK, DataBase::DB_LOGIN, DataBase::DB_PASSWORD, DataBase::DB_NAME );
 		if ($this->mysqli->connect_errno)
 			throw new errorWithDatabaseException ( "Error connecting with database" );
+		$this->mysqli->set_charset("utf8");
 	}
 	public function deletePushNotification($email) {
 		$query = sprintf ( DataBaseUser::QUERY_DELETE_PNT_FOR_CLIENT, $email );

@@ -22,6 +22,7 @@ class Payment {
 	}
 
 	public static function readClient($id) {
+		try {
 		Conekta::setApiKey("key_B3vB4bJxGfXS6NfKS9zhUg");
 		$customer = Conekta_Customer::find($id);
 		$Credit_Cards = $card = $customer->cards;
@@ -35,6 +36,9 @@ class Payment {
 				"cardExpirationYear" => $Credit_Card->exp_year,
 				"cardNumber" => $Credit_Card->last4 
 		);
+		} catch (Exception $e) {
+			throw new errorReadingUserPayment ();
+		}
 	}
 	public static function makeTransaction($price, $customerId, $name, $phone, $email) {
 		Conekta::setApiKey("key_B3vB4bJxGfXS6NfKS9zhUg");
@@ -90,6 +94,7 @@ class Payment {
 		return $charge->id;
 	}
 	public static function updatePaymentMethodForUser($id, $cardToken) {
+		try {
 		Conekta::setApiKey("key_B3vB4bJxGfXS6NfKS9zhUg");
 		$customer = Conekta_Customer::find($id);
 		if (count($customer->cards) <= 0) {
@@ -99,6 +104,9 @@ class Payment {
 		}
 		if (! $card)
 			throw new errorUpdatingPaymentException ();
+		} catch (Conekta_Error $e) {
+			throw new errorUpdatingPaymentException ();
+		}
 	}
 }
 class errorCreatingUserPaymentException extends Exception {
@@ -106,5 +114,7 @@ class errorCreatingUserPaymentException extends Exception {
 class errorUpdatingPaymentException extends Exception {
 }
 class errorMakingPaymentException extends Exception {
+}
+class errorReadingUserPayment extends Exception {
 }
 ?>

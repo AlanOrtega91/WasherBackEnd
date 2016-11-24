@@ -4,6 +4,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Car.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
+header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['token']) || !isset($_POST['idLavador']))
   die(json_encode(array("Satus"=>"ERROR missing values")));

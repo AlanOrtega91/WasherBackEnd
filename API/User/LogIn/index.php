@@ -4,6 +4,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Car.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Service.php";
 require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
+header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['email']) || !isset($_POST['password']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
@@ -30,6 +31,8 @@ try{
 } catch(carsNotFoundException $e)
 {
   echo json_encode(array("Status"=>"OK","carsList"=>null));
+} catch (errorReadingUserPayment $e) {
+	echo json_encode(array("Status"=>"ERROR user payment"));
 }
 
 ?>
