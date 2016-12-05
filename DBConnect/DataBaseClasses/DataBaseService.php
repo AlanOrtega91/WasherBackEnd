@@ -242,7 +242,8 @@ class DataBaseService {
 		const QUERY_UPDATE_TRANSACTION_ID = "UPDATE Servicio_Pedido SET idTransaccion = '%s'
 		WHERE idServicioPedido = '%s';";
 		const QUERY_READ_PUSH_NOTIFICATION_TOKEN = "
-		SELECT Cliente.pushNotificationToken AS pushNotificationTokenCliente, Lavador.pushNotificationToken AS pushNotificationTokenLavador
+		SELECT Cliente.pushNotificationToken AS pushNotificationTokenCliente, Cliente.dispositivo AS clientDevice, 
+				Lavador.pushNotificationToken AS pushNotificationTokenLavador, Lavador.dispositivo AS cleanerDevice
 		From Cliente
 		LEFT JOIN Servicio_Pedido ON
 		Servicio_Pedido.idCliente = Cliente.idCliente

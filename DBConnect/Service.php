@@ -57,14 +57,12 @@ class Service {
 		
 		$message = array (
 				"state" => "-1",
-				"rating" => $review ['Calificacion'] 
+				"rating" => $review ['Calificacion'], 
+				"message" => "Alguien te califico"
 		);
 		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
 		$token = $row->fetch_assoc ();
-		PushNotification::sendMessage ( array (
-				"1",
-				$token ['pushNotificationTokenLavador'] 
-		), $message );
+		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice']);
 	}
 	public function getStatus($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
@@ -121,14 +119,8 @@ class Service {
 		$message = $this->selectMessage ( $statusId, $line );
 		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
 		$token = $row->fetch_assoc ();
-		PushNotification::sendNotification ( array (
-				$token ['pushNotificationTokenCliente'],
-				$token ['pushNotificationTokenLavador'] 
-		), $message );
-		PushNotification::sendMessage ( array (
-				$token ['pushNotificationTokenCliente'],
-				$token ['pushNotificationTokenLavador'] 
-		), $message );
+		PushNotification::sendNotification($token ['pushNotificationTokenCliente'], $message,$token ['clientDevice']);
+		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice']);
 	}
 	public function checkForCancel($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
@@ -209,7 +201,7 @@ class Service {
 	}
 	public function acceptService($serviceId, $cleanerId, $token) {
 		$this->dataBase->updateServiceAccepted ( $serviceId, $cleanerId );
-		$this->changeServiceStatus ( $serviceId, 2 );
+		$this->changeServiceStatus ( $serviceId, 2 , 0);
 		return $this->getActiveService ( $token, 2 );
 	}
 	public function getPriceForCar($carId, $serviceId, $typeOfServiceId) {

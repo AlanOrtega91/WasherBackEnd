@@ -24,6 +24,7 @@ class DataBaseCleaner {
 	const QUERY_DELETE_PNT_FOR_CLEANER = "UPDATE Lavador SET pushNotificationToken = '' WHERE Email = '%s';";
 const QUERY_DELETE_PNT = "UPDATE Lavador SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
 const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL WHERE Email = '%s'";
+const QUERY_UPDATE_DEVICE = "UPDATE Lavador SET Dispositivo = '%s' WHERE idLavador = '%s'";
 	var $mysqli;
   
   public function __construct()
@@ -147,6 +148,12 @@ const QUERY_NULL_LOCATION = "UPDATE Lavador SET Latitud = NULL, Longitud = NULL 
 	public function updatePassword($email, $password)
 	{
 		$query = sprintf(DataBaseCleaner::QUERY_UPDATE_PASSWORD, $password, $email);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("ERROR");
+	}
+	
+	public function updateDevice($userId,$device) {
+		$query = sprintf(DataBaseCleaner::QUERY_UPDATE_DEVICE, $device, $userId);
 		if(!$this->mysqli->query($query))
 			throw new errorWithDatabaseException("ERROR");
 	}

@@ -35,7 +35,7 @@ class Cleaner {
 		$this->dataBase->updateLocation($idCleaner, $latitud, $longitud);
 	}
 
-function savePushNotificationToken($cleanerId,$token){
+	function savePushNotificationToken($cleanerId,$token){
 		$this->dataBase->updatePushNotificationToken($cleanerId,$token);
 	}
 
@@ -59,6 +59,9 @@ function savePushNotificationToken($cleanerId,$token){
 	function userHasToken($token)
 	{
 		return $this->dataBase->readSession($token);
+	}
+	function saveDevice($cleanerId,$device) {
+		$this->dataBase->updateDevice($cleanerId,$device);
 	}
 }
 ?>

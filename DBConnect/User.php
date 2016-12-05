@@ -49,5 +49,8 @@ class User {
 	function userHasToken($token) {
 		return $this->dataBase->readSession ( $token );
 	}
+	function saveDevice($userId,$device) {
+		$this->dataBase->updateDevice($userId,$device);
+	}
 }
 ?>

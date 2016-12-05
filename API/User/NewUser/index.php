@@ -5,7 +5,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['email']) ||
-    !isset($_POST['password']) || !isset($_POST['phone']))
+    !isset($_POST['password']) || !isset($_POST['phone']) || !isset($_POST['device']))
   die(json_encode(array("Satus"=>"ERROR missing values")));
   
 
@@ -16,6 +16,7 @@ try{
   $email = SafeString::safe($_POST['email']);
   $password = SafeString::safe($_POST['password']);
   $phone = SafeString::safe($_POST['phone']);
+  $device = SafeString::safe($_POST['device']);
   $image_name = "profile_image.jpg";
   $user  = new User();
   $userInfo = $user->addUser($name, $lastName, $email, $password,$phone);
@@ -27,10 +28,11 @@ try{
   $userInfo = $user->sendLogIn($email,$password);
   $conektaId = Payment::createUser( $name, $lastName, $email, $phone);
   $user->saveConektaId($userInfo["idCliente"], $conektaId);
+  $user->saveDevice($userInfo["idCliente"],$device);
   echo json_encode(array("Status"=>"OK","User Info"=>$userInfo));
 } catch(errorWithDatabaseException $e)
 {
-  echo json_encode(array("Status"=>"ERROR DB"));
+  echo json_encode(array("Status"=>"ERROR DB".$e->getMessage()));
 } catch(errorCreatingUserPaymentException $e)
 {
   echo json_encode(array("Status"=>"CREATE PAYMENT ACCOUNT ERROR","User Info"=>$userInfo));

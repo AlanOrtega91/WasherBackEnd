@@ -24,6 +24,7 @@ class DataBaseUser {
 	const QUERY_DELETE_PNT_FOR_CLIENT = "UPDATE Cliente SET pushNotificationToken = '' WHERE Email = '%s';";
 	const QUERY_DELETE_PNT = "UPDATE Cliente SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
 	const QUERY_UPDATE_CONEKTA_ID = "UPDATE Cliente SET ConektaId = '%s' WHERE idcliente = '%s';";
+	const QUERY_UPDATE_DEVICE = "UPDATE Cliente SET Dispositivo = '%s' WHERE idCliente = '%s'";
 	var $mysqli;
 	public function __construct() {
 		$this->mysqli = new mysqli ( DataBase::DB_LINK, DataBase::DB_LOGIN, DataBase::DB_PASSWORD, DataBase::DB_NAME );
@@ -128,6 +129,11 @@ class DataBaseUser {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
 		if (! $this->mysqli->query ( $query ))
 			throw new errorWithDatabaseException ( "ERROR" );
+	}
+	public function updateDevice($userId,$device) {
+		$query = sprintf(DataBaseUser::QUERY_UPDATE_DEVICE, $device, $userId);
+		if(!$this->mysqli->query($query))
+			throw new errorWithDatabaseException("ERROR al actualizar");
 	}
 }
 ?>
