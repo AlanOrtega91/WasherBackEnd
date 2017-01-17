@@ -9,7 +9,7 @@ class DataBaseProduct {
     Lavador_Tiene_Producto.idProducto = Producto.idProducto
     WHERE Lavador.idLavador = '%s'
 		;";
-		const QUERY_UPDATE_PRODUCT = "UPDATE Lavador_Tiene_Producto SET Cantidad = '%s' WHERE idLavador = '%s' AND idProducto = '%s'
+	const QUERY_UPDATE_PRODUCT = "UPDATE Lavador_Tiene_Producto SET Cantidad = '%s' WHERE idLavador = '%s' AND idProducto = '%s'
 		;";
 		
     

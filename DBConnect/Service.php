@@ -62,7 +62,7 @@ class Service {
 		);
 		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
 		$token = $row->fetch_assoc ();
-		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice']);
+		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice'],"cleaner");
 	}
 	public function getStatus($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
@@ -119,8 +119,8 @@ class Service {
 		$message = $this->selectMessage ( $statusId, $line );
 		$row = $this->dataBase->readPushNotificationToken ( $serviceId );
 		$token = $row->fetch_assoc ();
-		PushNotification::sendNotification($token ['pushNotificationTokenCliente'], $message,$token ['clientDevice']);
-		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice']);
+		PushNotification::sendNotification($token ['pushNotificationTokenCliente'], $message,$token ['clientDevice'],"client");
+		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice'],"cleaner");
 	}
 	public function checkForCancel($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
@@ -131,7 +131,7 @@ class Service {
 	public function checkForCancelTakingTooLong($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
 		$info = $service->fetch_assoc ();
-		if ($info ['status'] == "Started")
+		if ($info ['status'] == "Started" || $info ['status'] == "Finished")
 			throw new serviceCantBeCanceled ();
 	}
 	public function selectMessage($statusId, $line) {
@@ -193,19 +193,16 @@ class Service {
 		
 		return $servicesList;
 	}
-	public function requestService($direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche, $idCocheFavorito) {
+	public function requestService($direccion, $latitud, $longitud, $idServicio, $idCliente, $idCoche, $idCocheFavorito) {
 		date_default_timezone_set ( 'America/Mexico_City' );
 		$fecha = date ( "Y-m-d H:i:s" );
-		$idService = $this->dataBase->insertService ( $fecha, $direccion, $latitud, $longitud, $idServicio, $idCliente, $idTipoServicio, $idCoche , $idCocheFavorito);
+		$idService = $this->dataBase->insertService ( $fecha, $direccion, $latitud, $longitud, $idServicio, $idCliente, $idCoche , $idCocheFavorito);
 		return $idService;
 	}
 	public function acceptService($serviceId, $cleanerId, $token) {
 		$this->dataBase->updateServiceAccepted ( $serviceId, $cleanerId );
 		$this->changeServiceStatus ( $serviceId, 2 , 0);
 		return $this->getActiveService ( $token, 2 );
-	}
-	public function getPriceForCar($carId, $serviceId, $typeOfServiceId) {
-		return $this->dataBase->calculatePrice ( $carId, $typeOfServiceId, $serviceId );
 	}
 }
 class serviceCantBeCanceled extends Exception {

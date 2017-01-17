@@ -5,7 +5,7 @@ header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['email']) ||
     !isset($_POST['password']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $name = SafeString::safe($_POST['name']);

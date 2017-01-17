@@ -18,8 +18,8 @@ class User {
 		$this->dataBase->updateConektaId($userId, $conektaId);
 	}
 	function sendLogIn($email, $password) {
-		$this->sendLogOut ( $email );
 		$this->dataBase->readUser ( $email, $password );
+		$this->sendLogOut ( $email );
 		$token = $this->createSession ( $email );
 		
 		return $this->dataBase->readUserInfo ( $token );

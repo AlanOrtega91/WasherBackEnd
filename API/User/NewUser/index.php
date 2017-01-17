@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['name']) || !isset($_POST['lastName']) || !isset($_POST['email']) ||
     !isset($_POST['password']) || !isset($_POST['phone']) || !isset($_POST['device']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 
 

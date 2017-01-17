@@ -4,7 +4,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/Inversionista.php";
 header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['email']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $email = SafeString::safe($_POST['email']);

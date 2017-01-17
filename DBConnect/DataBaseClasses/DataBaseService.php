@@ -3,22 +3,14 @@ require_once dirname(__FILE__)."/DataBase.php";
 class DataBaseService {
   
   const QUERY_READ_ALL_SERVICES = "SELECT * FROM Servicio;";
-	const QUERY_READ_ALL_SERVICES_TYPE = "SELECT * FROM Tipo_Servicio;";
-	const QUERY_READ_MULTIPLIERS_FOR_CAR = "SELECT Multiplicador  AS precio
-	FROM Vehiculo
+	const QUERY_READ_PRICE = "SELECT Precio
+	FROM Precio_Servicio
 	WHERE idVehiculo = '%s'
-	;";
-	const QUERY_READ_PRICE_FOR_SERVICE = "SELECT Servicio.PrecioBase AS precio
-	FROM Servicio
-	WHERE Servicio.idServicio = '%s'
-	;";
-	const QUERY_READ_PRICE_FOR_SERVICE_TYPE = "SELECT Tipo_Servicio.Multiplicador AS precio
-	FROM Tipo_Servicio 
-	WHERE Tipo_Servicio.idTipoServicio = '%s'
+	AND idServicio = '%s'
 	;";
 	const QUERY_INSERT_SERVICE = "INSERT INTO Servicio_Pedido (FechaPedido, Direccion, Latitud, Longitud, Precio, idServicio,
-	idCliente, idTipoServicio, idVehiculo, idVehiculoFavorito)
-	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+	idCliente, idVehiculo, idVehiculoFavorito)
+	VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
 	;";
 	const QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_OPEN = "SELECT * FROM Servicio_Pedido
 	WHERE idServicioPedido = '%s' AND idLavador IS NULL AND idStatus != 6 
@@ -66,8 +58,6 @@ class DataBaseService {
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
@@ -86,7 +76,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Tipo_Servicio.TipoServicio AS Tipo,    
+		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente,    
 		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
@@ -97,8 +87,6 @@ class DataBaseService {
 		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Sesion_Cliente ON
@@ -151,7 +139,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud,
 		Servicio.Descripcion AS descripcion, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Servicio_Pedido.idTransaccion AS idTransaccion, Tipo_Servicio.TipoServicio AS Tipo,
+		Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Servicio_Pedido.idTransaccion AS idTransaccion,
 		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
@@ -162,8 +150,6 @@ class DataBaseService {
 		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Sesion_Cliente ON
@@ -184,7 +170,7 @@ class DataBaseService {
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
 		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, 
-		Servicio_Pedido.FechaAceptado AS fechaAceptado, Tipo_Servicio.TipoServicio AS Tipo,
+		Servicio_Pedido.FechaAceptado AS fechaAceptado,
 		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
@@ -195,8 +181,6 @@ class DataBaseService {
 		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
@@ -205,14 +189,15 @@ class DataBaseService {
 		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Cliente.idCliente = '%s'
 		AND Servicio_Pedido.idStatus != '6'
-		ORDER BY fechaEmpezado DESC
+		ORDER BY fechaEmpezado IS NULL DESC, fechaEmpezado DESC
+		LIMIT 12
 		;";
 		
 		const QUERY_SELECT_SERVICES_FOR_CLEANER = "SELECT Servicio_Pedido.idServicioPedido AS id, Status.Status as status, Lavador.Nombre AS nombreLavador, 
 		Vehiculo.Nombre AS coche, Servicio.Servicio AS servicio,Lavador.idLavador AS idLavador, Lavador.Latitud AS latitudLavador, Lavador.Longitud AS longitudLavador, 
 		Servicio_Pedido.precio AS precio, Servicio_Pedido.Latitud AS latitud, Servicio_Pedido.Longitud AS longitud, Tiempo_Servicio.TiempoEstimado AS tiempoEstimado,
 		Servicio.Descripcion AS descripcion, Servicio_Pedido.FechaEmpezado AS fechaEmpezado, Servicio_Pedido.FechaEmpezado + INTERVAL tiempoEstimado MINUTE AS horaFinalEstimada,
-		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente, Tipo_Servicio.TipoServicio AS Tipo,
+		Servicio_Pedido.Calificacion AS Calificacion, Cliente.Nombre AS nombreCliente, Cliente.Telefono AS telCliente,
 		Vehiculos_Favoritos.Color AS Color, Vehiculos_Favoritos.Placas AS Placas, Vehiculos_Favoritos.Marca AS Marca
 		FROM Servicio_Pedido
 		LEFT JOIN Status ON
@@ -223,8 +208,6 @@ class DataBaseService {
 		Vehiculos_Favoritos.idVehiculoFavorito = Servicio_Pedido.idVehiculoFavorito
 		LEFT JOIN Servicio ON
 		Servicio_Pedido.idServicio = Servicio.idServicio
-		LEFT JOIN Tipo_Servicio ON
-		Servicio_Pedido.idTipoServicio = Tipo_Servicio.idTipoServicio
 		LEFT JOIN Cliente ON
 		Servicio_Pedido.idCliente = Cliente.idCliente
 		LEFT JOIN Lavador ON
@@ -233,7 +216,8 @@ class DataBaseService {
 		Vehiculo.idVehiculo = Tiempo_Servicio.idVehiculo AND Tiempo_Servicio.idServicio = Servicio.idServicio
 		WHERE Lavador.idLavador = '%s'
 		AND Servicio_Pedido.idStatus != '6'
-		ORDER BY fechaEmpezado DESC
+		ORDER BY fechaEmpezado IS NULL DESC, fechaEmpezado DESC
+		LIMIT 50
 		;";
 		
 		const QUERY_UPDATE_SERVICE_REVIEW = "UPDATE Servicio_Pedido SET Calificacion = '%d' WHERE idServicioPedido = '%d';";
@@ -268,25 +252,24 @@ class DataBaseService {
 		public function readCleanerLocation($cleanerId){
 				$query = sprintf(DataBaseService::QUERY_GET_CLEANER_LOCATION,$cleanerId);
 				if(!$result = $this->mysqli->query($query))
-						throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+						throw new errorWithDatabaseException('Query failed: '.$query);
 				$line = $result->fetch_assoc();
 				return $line;
 		}
 		
-		function getUserId($idService)
+	function getUserId($idService)
 	{
 		$query = sprintf(DataBaseService::QUERY_GET_USER_ID,$idService);
 		if(!$result = $this->mysqli->query($query))
-			throw new errorWithDatabaseException('Query failed: '. $this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed: '.$query);
 		$line = $result->fetch_assoc();
     return $line['idCliente'];
 	}
 		
-		public function readPushNotificationToken($serviceId)
-		{
+		public function readPushNotificationToken($serviceId){
 				$query = sprintf(DataBaseService::QUERY_READ_PUSH_NOTIFICATION_TOKEN,$serviceId);
 				if(!($result = $this->mysqli->query($query)))
-					throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+					throw new errorWithDatabaseException('Query failed' .$query);
 				
 				return $result;
 		}
@@ -294,14 +277,14 @@ class DataBaseService {
 	public function updateTransactionId($serviceId,$transactionId){
 		$query = sprintf(DataBaseService::QUERY_UPDATE_TRANSACTION_ID,$transactionId,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function blockUser($idClient)
 	{
 		$query = sprintf(DataBaseService::QUERY_BLOCK_USER,$idClient);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed' .$query);
 		
 			return $result;
 	}
@@ -310,7 +293,7 @@ class DataBaseService {
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_CLEANERS_LOCATION,$pointLatitud, $pointLongitud, $pointLatitud, $distance);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed' .$query);
 		
     return $result;
 	}
@@ -319,7 +302,7 @@ class DataBaseService {
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_CLEANER_REVIEWS,$cleanerId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed' .$query);
 		
     return $result;
 	}
@@ -328,56 +311,38 @@ class DataBaseService {
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_SERVICES_LOCATION,$pointLatitud, $pointLongitud, $pointLatitud, $distance);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed' .$query);
 		
     return $result;
 	}
   
-	public function insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idTipoServicio,$idCoche, $idCocheFavorito)
+	public function insertService($fecha,$direccion, $latitud,$longitud,$idServicio,$idCliente,$idCoche, $idCocheFavorito)
 	{
-		$query = sprintf(DataBaseService::QUERY_INSERT_SERVICE,$fecha,$direccion,$latitud,$longitud,$this->calculatePrice($idCoche, $idTipoServicio, $idServicio),$idServicio,$idCliente,$idTipoServicio,$idCoche, $idCocheFavorito);
+		$query = sprintf(DataBaseService::QUERY_INSERT_SERVICE,$fecha,$direccion,$latitud,$longitud,$this->calculatePrice($idCoche, $idServicio),$idServicio,$idCliente,$idCoche, $idCocheFavorito);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed' .$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed' .$query);
 		return $this->mysqli->insert_id;
 	}
 	
 	
-	public function calculatePrice($idCoche, $idTipoServicio, $idServicio)
+	public function calculatePrice($idCoche, $idServicio )
 	{
-		$query = sprintf(DataBaseService::QUERY_READ_MULTIPLIERS_FOR_CAR,$idCoche);
+		$query = sprintf(DataBaseService::QUERY_READ_PRICE,$idCoche, $idServicio);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
 		if($result->num_rows === 0)
 			throw new errorWithDatabaseException("Price could not be calculated");
 		
-		$priceForCar = $result->fetch_assoc();
-		$query = sprintf(DataBaseService::QUERY_READ_PRICE_FOR_SERVICE,$idServicio);
-		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
-		
-		if($result->num_rows === 0)
-			throw new errorWithDatabaseException("Price could not be calculated");
-		
-		$priceForService = $result->fetch_assoc();
-		
-		$query = sprintf(DataBaseService::QUERY_READ_PRICE_FOR_SERVICE_TYPE,$idTipoServicio);
-		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
-		
-		if($result->num_rows === 0)
-			throw new errorWithDatabaseException("Price could not be calculated");
-		
-		$priceForServiceType = $result->fetch_assoc();
-		
-    return $priceForCar['precio'] * $priceForService['precio'] * $priceForServiceType['precio'];
+		$priceForCarAndService = $result->fetch_assoc();
+		return $priceForCarAndService['Precio'];
 	}
 	
   public function readAllServices()
   {
     $query = sprintf(DataBaseService::QUERY_READ_ALL_SERVICES);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
   }
@@ -386,7 +351,7 @@ class DataBaseService {
 	{
 		$query = sprintf(DataBaseService::QUERY_READ_ALL_SERVICES_TYPE);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
 	}
@@ -395,7 +360,7 @@ class DataBaseService {
   {
     $query = sprintf(DataBaseService::QUERY_READ_SERVICE,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
 		if($result->num_rows === 0)
 			throw new serviceNotFoundException("Service not found");
@@ -407,7 +372,7 @@ class DataBaseService {
   {
     $query = sprintf(DataBaseService::QUERY_READ_ACTIVE_SERVICE_FOR_USER,$token);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
   }
@@ -416,7 +381,7 @@ class DataBaseService {
   {
     $query = sprintf(DataBaseService::QUERY_READ_ACTIVE_SERVICE_FOR_CLEANER,$token);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
   }
@@ -425,7 +390,7 @@ class DataBaseService {
   {
     $query = sprintf(DataBaseService::QUERY_SELECT_SERVICES_FOR_USER,$clientId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
   }
@@ -434,34 +399,34 @@ class DataBaseService {
   {
     $query = sprintf(DataBaseService::QUERY_SELECT_SERVICES_FOR_CLEANER,$clientId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
     return $result;
   }
 	public function updateAcceptTimeService ( $serviceId, $fecha ){
 		$query = sprintf(DataBaseService::QUERY_UPDATE_ACCEPT_TIME,$fecha,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateStartTimeService($serviceId, $fecha)
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_START_TIME,$fecha,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateReview($serviceId,$rating){
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_REVIEW,$rating,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateService($serviceId, $statusId)
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE,$statusId,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateServiceAccepted($serviceId,$cleanerId)
@@ -470,20 +435,20 @@ class DataBaseService {
 		
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED,$cleanerId,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	public function checkIfServiceCanBeAccepted($serviceId,$cleanerId)
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_OPEN,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
 		if($result->num_rows === 0)
 			throw new serviceTakenException("Service taken");
 		
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_AVAILABLE_PRODUCTS, $cleanerId, $serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
 		if($result->num_rows != 0)
 			throw new insufficientProductException("Not Enough Products");
@@ -493,21 +458,21 @@ class DataBaseService {
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_CLEANER_PRODUCTS,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function readProductsForService($serviceId,$cleanerId)
 	{
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED_CHECK_OPEN,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 		
 		if($result->num_rows === 0)
 			throw new serviceTakenException("Service taken");
 		
 		$query = sprintf(DataBaseService::QUERY_UPDATE_SERVICE_ACCEPTED,$cleanerId,$serviceId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed');
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
   
 }

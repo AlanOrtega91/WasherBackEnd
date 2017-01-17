@@ -1,15 +1,15 @@
 <?php
 abstract class DataBase {
 	
-//  	const DB_LINK = '127.0.0.1';
-//  	const DB_LOGIN = 'giltonDBus4r';
-//  	const DB_PASSWORD ='lk_je9023U23daerD';
-//  	const DB_NAME = 'gilton';
- 	
  	const DB_LINK = '127.0.0.1';
- 	const DB_LOGIN = 'root';
- 	const DB_PASSWORD ='';
+ 	const DB_LOGIN = 'washerDBus4r';
+ 	const DB_PASSWORD ='lk_je9023U23daerD';
  	const DB_NAME = 'washer';
+ 	
+//  	const DB_LINK = '127.0.0.1';
+//  	const DB_LOGIN = 'root';
+//  	const DB_PASSWORD ='';
+//  	const DB_NAME = 'washer';
 }
 
 class carsNotFoundException extends Exception{

@@ -6,7 +6,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/Cleaner.php";
 header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['idCliente']) || !isset($_POST['clientType']) || !isset($_POST['token']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $clientId = SafeString::safe($_POST['idCliente']);

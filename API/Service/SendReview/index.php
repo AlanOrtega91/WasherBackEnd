@@ -5,7 +5,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/User.php";
 header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['serviceId']) || !isset($_POST['rating']) || !isset($_POST['token']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $serviceId = SafeString::safe($_POST['serviceId']);

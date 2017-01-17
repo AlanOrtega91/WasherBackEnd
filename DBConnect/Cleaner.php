@@ -11,10 +11,9 @@ class Cleaner {
     $this->dataBase = new DataBaseCleaner();
 	}
 	
-  function sendLogIn($email,$password)
-	{
-		$this->sendLogOut($email);
+  function sendLogIn($email,$password) {
 		$this->dataBase->readUser($email, $password);
+		$this->sendLogOut($email);
 		$token = $this->createSession($email);
 		return $this->dataBase->readCleanerInfo($token);
 	}

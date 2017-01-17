@@ -7,7 +7,7 @@ require_once dirname(__FILE__)."/../../../DBConnect/Payment.php";
 header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['email']) || !isset($_POST['password']) || !isset($_POST['device']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
 
 
 try{
@@ -29,7 +29,7 @@ try{
   echo json_encode(array("Status"=>"ERROR user"));
 } catch(errorWithDatabaseException $e)
 {
-  echo json_encode(array("Status"=>"ERROR database"));
+  echo json_encode(array("Status"=>"ERROR database".$e->getMessage()));
 } catch(carsNotFoundException $e)
 {
   echo json_encode(array("Status"=>"OK","carsList"=>null));

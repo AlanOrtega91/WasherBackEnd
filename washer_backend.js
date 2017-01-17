@@ -1,6 +1,6 @@
 (function ($){
   jQuery("document").ready(function(){
-    var SERVICES_URL = "/Vashen/";
+    var SERVICES_URL = "/Washer/";
     var token = "";
     var id = "";
     var services;
@@ -42,7 +42,7 @@
         return;
       }
       var address = SERVICES_URL+"API/"+type+"/LogIn/"; 
-      $.post(address, {email: email, password: password}, function(data){
+      $.post(address, {email: email, password: password, device: "web"}, function(data){
       	console.log(data);
         if(data.Status == "OK"){
           $("#error").html("");

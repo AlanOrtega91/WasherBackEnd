@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['vehiculoId']) || !isset($_POST['color']) || !isset($_POST['placas'])
 	 || !isset($_POST['marca'])  || !isset($_POST['token']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
   $vehiculoId = SafeString::safe($_POST['vehiculoId']);

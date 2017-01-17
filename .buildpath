@@ -6,7 +6,6 @@
 	<buildpathentry kind="src" path="API/Cleaner/LogOut"/>
 	<buildpathentry kind="src" path="API/Cleaner/Product/ReadProducts"/>
 	<buildpathentry kind="src" path="API/Cleaner/Product/RefillProduct"/>
-	<buildpathentry kind="src" path="API/Cleaner/ReadCleanerData"/>
 	<buildpathentry kind="src" path="API/Cleaner/SavePushNotificationToken"/>
 	<buildpathentry kind="src" path="API/Cleaner/UpdateLocation"/>
 	<buildpathentry kind="src" path="API/Service/AcceptService"/>
@@ -14,18 +13,13 @@
 	<buildpathentry kind="src" path="API/Service/GetCleanerLocation"/>
 	<buildpathentry kind="src" path="API/Service/GetNearbyCleaners"/>
 	<buildpathentry kind="src" path="API/Service/GetNearbyServices"/>
-	<buildpathentry kind="src" path="API/Service/GetServicePrice"/>
 	<buildpathentry kind="src" path="API/Service/GetServicesHistory"/>
-	<buildpathentry kind="src" path="API/Service/ReadActiveService"/>
 	<buildpathentry kind="src" path="API/Service/ReadReview"/>
 	<buildpathentry kind="src" path="API/Service/RequestService"/>
-	<buildpathentry kind="src" path="API/Service/RequestServiceInfo"/>
-	<buildpathentry kind="src" path="API/Service/RequestServiceList"/>
 	<buildpathentry kind="src" path="API/Service/SendReview"/>
 	<buildpathentry kind="src" path="API/User/Car/DeleteCar"/>
 	<buildpathentry kind="src" path="API/User/Car/EditCar"/>
 	<buildpathentry kind="src" path="API/User/Car/NewCar"/>
-	<buildpathentry kind="src" path="API/User/Car/RequestCarList"/>
 	<buildpathentry kind="src" path="API/User/Car/SetFavoriteCar"/>
 	<buildpathentry kind="src" path="API/User/ChangePassword"/>
 	<buildpathentry kind="src" path="API/User/ChangeUserData"/>
@@ -33,7 +27,6 @@
 	<buildpathentry kind="src" path="API/User/LogIn"/>
 	<buildpathentry kind="src" path="API/User/LogOut"/>
 	<buildpathentry kind="src" path="API/User/NewUser"/>
-	<buildpathentry kind="src" path="API/User/ReadUserData"/>
 	<buildpathentry kind="src" path="API/User/SavePushNotificationToken"/>
 	<buildpathentry kind="src" path="braintree/lib"/>
 	<buildpathentry kind="src" path="braintree/tests"/>

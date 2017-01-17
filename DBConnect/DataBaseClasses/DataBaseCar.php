@@ -36,7 +36,7 @@ class DataBaseCar {
 	{
 		$query = sprintf(DataBaseCar::QUERY_INSERT_CAR,$vehiculoId,$clientId,$color,$placas,$marca);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed'.$query);
 		return $this->mysqli->insert_id;
 	}
 	
@@ -44,19 +44,19 @@ class DataBaseCar {
 	{
 		$query = sprintf(DataBaseCar::QUERY_DELETE_CAR,$favoriteCarId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateCar($vehiculoId,$vehiculoFavoritoId,$color,$placas,$marca){
 		$query = sprintf(DataBaseCar::QUERY_UPDATE_CAR,$vehiculoId,$color,$placas,$marca,$vehiculoFavoritoId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed'.$query);
 	}
 	
 	public function updateFavoriteCar($vehiculoFavoritoId,$clienteId){
 		$query = sprintf(DataBaseCar::QUERY_UNSET_FAV_CAR,$clienteId);
 		if(!($result = $this->mysqli->query($query)))
-			throw new errorWithDatabaseException('Query failed'.$this->mysqli->error);
+			throw new errorWithDatabaseException('Query failed'.$query);
 
 		$query = sprintf(DataBaseCar::QUERY_SET_FAV_CAR,$vehiculoFavoritoId);
 		if(!($result = $this->mysqli->query($query)))

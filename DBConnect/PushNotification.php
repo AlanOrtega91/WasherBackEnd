@@ -4,83 +4,62 @@ class PushNotification {
 	// (Android)API access key from Google API's Console.
 	private static $API_ACCESS_KEY = 'AAAAhQZCWH8:APA91bEyp1ThX_XnUkKAFNgLxDYfhISo99PSTFTuyTd_8gjksbrL_Olw3Z7c6ypd5sRHajlbFpw552ponntqd9EqZ5qoPhzoESBYPpj-Culp_yDOi8qpJRBlfLGAKOIB4F4SVZhatKLd06t4vJR3kax2XtkFaKdM2w';
 	// (iOS) Private key's passphrase.
-	private static $passphrase = 'joashp';
+	private static $passphrase = 'pene';
 	// (Windows Phone 8) The name of our push channel.
 	private static $channelName = "joashp";
 	
 	private static $production = false;
 	
-	public static function sendNotification($deviceId, $message, $deviceType) {
+	public static function sendNotification($deviceId, $message, $deviceType, $userType) {
 		switch ($deviceType){
 			case "android":
 				self::sendNotificationAndroid($deviceId,$message);
 				break;
 			case "ios":
+				self::sendNotificationiOS($deviceId,$message);
 				break;
 		}
 	}
 	
 	// Sends Push notification for iOS users
-	private function sendNotificationiOS($message, $devicetoken) {
-		$ctx = stream_context_create();
-		if (self::$production) {
-			$gateway = 'gateway.push.apple.com:2195';
-		} else {
-			$gateway = 'gateway.sandbox.push.apple.com:2195';
-		}
-		// ck.pem is your certificate file
-		stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
-		stream_context_set_option($ctx, 'ssl', 'passphrase', self::$passphrase);
-		// Open a connection to the APNS server
-		$fp = stream_socket_client(
-				$gateway, $err,
-				$errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
-		if (!$fp) {
-			throw new errorSendingNotification ("Failed to connect: $err $errstr" . PHP_EOL);
-		}
-		// Create the payload body
-		$body['aps'] = array(
-				'alert' => array(
-						'title' => 'Washer',
-						'body' => $message ['message'],
-			 ),
+	private static function sendNotificationiOS($token, $message) {
+		$url = 'https://fcm.googleapis.com/fcm/send';
+		$fieldsNotification = array (
+				'notification' => array (
+						"title" => "Washer",
+						"body" => $message ['message'],
+				),
 				"data" => $message,
-				'sound' => 'default'
+ 				'priority' => 'high',
+				'to' => $token
 		);
-		// Encode the payload as JSON
-		$payload = json_encode($body);
-		// Build the binary notification
-		$msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
-		// Send it to the server
-		$result = fwrite($fp, $msg, strlen($msg));
-
-		// Close the connection to the server
-		fclose($fp);
-		if (!$result)
-			throw new errorSendingNotification ('Message not delivered' . PHP_EOL);
-		else
-			return 'Message successfully delivered' . PHP_EOL;
+		$fieldsMessage = array(
+				"data" => $message,
+				'priority' => 'high',
+				'to' => $token
+		);
+		$headers = array (
+				'Authorization:key = '. self::$API_ACCESS_KEY,
+				'Content-Type: application/json'
+		);
+		
+		self::useCurl($url, $headers, json_encode($fieldsNotification));
+		self::useCurl($url, $headers, json_encode($fieldsMessage));
 	}
 	
 	private static function sendNotificationAndroid($token, $message) {
 		$url = 'https://fcm.googleapis.com/fcm/send';
-		$fields = array (
-				'notification' => array (
-						"title" => "Washer",
-						"body" => $message ['message'],
-						"icon" => "appicon",
-						"sound" => "default" 
-				),
+		$fieldsMessage = array(
 				"data" => $message,
 				'priority' => 'high',
-				'registration_ids' => array($token) 
+				'registration_ids' => array($token)
 		);
 		$headers = array (
 				'Authorization:key = '. self::$API_ACCESS_KEY,
 				'Content-Type: application/json' 
 		);
 		
-		return self::useCurl($url, $headers, json_encode($fields));
+		self::useCurl($url, $headers, json_encode($fieldsMessage));
 	}
 	
 	

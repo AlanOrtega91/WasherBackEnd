@@ -7,7 +7,7 @@ header('Content-Type: text/html; charset=utf8');
 
 if (!isset($_POST['serviceId']) || !isset($_POST['statusId']) || !isset($_POST['token']) 
 		|| !isset($_POST['cancelCode']))
-  die(json_encode(array("Satus"=>"ERROR missing values")));
+  die(json_encode(array("Status"=>"ERROR missing values")));
  
 try{ 
   $serviceId = SafeString::safe($_POST['serviceId']);
@@ -26,8 +26,7 @@ try{
   echo json_encode(array("Status"=>"OK"));
 } catch(errorWithDatabaseException $e)
 {
-  echo $e->getMessage();
-  echo json_encode(array("Status"=>"ERROR DB"));
+  echo json_encode(array("Status"=>"ERROR DB". $e->getMessage()));
 } catch (noSessionFoundException $e){
 	echo json_encode(array("Status" => "SESSION ERROR"));
 } catch (serviceCantBeCanceled $e){
