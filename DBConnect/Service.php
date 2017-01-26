@@ -3,6 +3,7 @@ require_once dirname ( __FILE__ ) . "/DataBaseClasses/DataBaseService.php";
 require_once dirname ( __FILE__ ) . "/PushNotification.php";
 class Service {
 	private $dataBase;
+	const CANCEL_PRICE = 0.20; 
 	public function __construct() {
 		$this->dataBase = new DataBaseService ();
 	}
@@ -94,7 +95,7 @@ class Service {
 		if ($statusId == 6) {
 			if ($cancelCode == 1) {
 				try {
-					$this->makePayment ( $serviceId, $line, 100 );
+					$this->makePayment ( $serviceId, $line, $line ['precio'] * Service::CANCEL_PRICE );
 				} catch ( errorMakingPaymentException $e ) {
 					$this->dataBase->blockUser ( $line ['idCliente'] );
 				}

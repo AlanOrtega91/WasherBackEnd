@@ -28,6 +28,7 @@ class PushNotification {
 				'notification' => array (
 						"title" => "Washer",
 						"body" => $message ['message'],
+						"sound" => "default"
 				),
 				"data" => $message,
  				'priority' => 'high',
