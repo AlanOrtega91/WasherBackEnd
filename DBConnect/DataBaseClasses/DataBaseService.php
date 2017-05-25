@@ -21,7 +21,8 @@ class DataBaseService {
 	LEFT JOIN Vehiculo ON
 	Vehiculo.idVehiculo = Servicio_Pedido.idVehiculo
 	LEFT JOIN Vehiculo_Usa_Producto ON
-	Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo 
+	Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo AND
+    Vehiculo_Usa_Producto.idServicio = Vehiculo.idServicio
 	LEFT JOIN Producto ON
 	Producto.idProducto = Vehiculo_Usa_Producto.idProducto
 	LEFT JOIN Lavador_Tiene_Producto ON
@@ -123,8 +124,11 @@ class DataBaseService {
 		const QUERY_UPDATE_CLEANER_PRODUCTS = "UPDATE Servicio_Pedido
 		LEFT JOIN Vehiculo ON
 		Servicio_Pedido.idVehiculo = Vehiculo.idVehiculo
+		LEFT JOIN Servicio ON
+		Servicio_Pedido.idServicio = Servicio.idServicio 
 		LEFT JOIN Vehiculo_Usa_Producto ON
-		Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo
+		Vehiculo_Usa_Producto.idVehiculo = Vehiculo.idVehiculo AND
+		Vehiculo_Usa_Producto.idServicio = Servicio.idServicio
 		LEFT JOIN Producto ON
 		Producto.idProducto = Vehiculo_Usa_Producto.idProducto
 		LEFT JOIN Lavador_Tiene_Producto ON
