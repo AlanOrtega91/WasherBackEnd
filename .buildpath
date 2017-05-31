@@ -30,6 +30,5 @@
 	<buildpathentry kind="src" path="API/User/SavePushNotificationToken"/>
 	<buildpathentry kind="src" path="braintree/lib"/>
 	<buildpathentry kind="src" path="braintree/tests"/>
-	<buildpathentry kind="src" path="DBConnect"/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
 </buildpath>
