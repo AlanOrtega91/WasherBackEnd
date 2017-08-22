@@ -96,7 +96,7 @@ class Service {
 			if ($cancelCode == 1) {
 				try {
 					$this->makePayment ( $serviceId, $line, $line ['precio'] * Service::CANCEL_PRICE );
-				} catch ( errorMakingPaymentException $e ) {
+				} catch ( Exception $e ) {
 					$this->dataBase->blockUser ( $line ['idCliente'] );
 				}
 			} else if ($cancelCode == 0) {
@@ -109,7 +109,7 @@ class Service {
 		if ($statusId == 5) {
 			try {
 				$this->makePayment ( $serviceId, $line, $line ['precio'] );
-			} catch ( errorMakingPaymentException $e ) {
+			} catch ( Exception $e ) {
 				$this->dataBase->blockUser ( $line ['idCliente'] );
 			}
 		}
@@ -123,6 +123,7 @@ class Service {
 		PushNotification::sendNotification($token ['pushNotificationTokenCliente'], $message,$token ['clientDevice'],"client");
 		PushNotification::sendNotification($token ['pushNotificationTokenLavador'], $message,$token ['cleanerDevice'],"cleaner");
 	}
+	
 	public function checkForCancel($serviceId) {
 		$service = $this->dataBase->readService ( $serviceId );
 		$info = $service->fetch_assoc ();
@@ -195,6 +196,9 @@ class Service {
 		return $servicesList;
 	}
 	public function requestService($direccion, $latitud, $longitud, $idServicio, $idCliente, $idCoche, $idCocheFavorito) {
+		if ($this->dataBase->usuarioEstaBloqueado($idCliente)) {
+			throw new usuarioBloqueado();
+		}
 		date_default_timezone_set ( 'America/Mexico_City' );
 		$fecha = date ( "Y-m-d H:i:s" );
 		$idService = $this->dataBase->insertService ( $fecha, $direccion, $latitud, $longitud, $idServicio, $idCliente, $idCoche , $idCocheFavorito);
@@ -207,5 +211,7 @@ class Service {
 	}
 }
 class serviceCantBeCanceled extends Exception {
+}
+class usuarioBloqueado extends Exception {
 }
 ?>

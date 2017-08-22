@@ -32,5 +32,7 @@ try{
   echo json_encode(array("Status"=>"ERROR DB".$e->getMessage()));
 } catch (noSessionFoundException $e){
   	echo json_encode(array("Status"=>"SESSION ERROR"));
-  }
+} catch (usuarioBloqueado $e) {
+	echo json_encode(array("Status"=>"ERROR usuario".$e->getMessage()));
+}
 ?>

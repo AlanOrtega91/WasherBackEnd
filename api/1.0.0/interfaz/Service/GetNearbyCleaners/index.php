@@ -9,7 +9,7 @@ if (!isset($_POST['latitud']) || !isset($_POST['longitud']) || !isset($_POST['to
   die(json_encode(array("Status"=>"ERROR missing values")));
   
 try{
-  $distance = 5;
+  $distance = 1.5;
   $latitud = SafeString::safe($_POST['latitud']);
   $longitud = SafeString::safe($_POST['longitud']);
   $token = SafeString::safe($_POST['token']);

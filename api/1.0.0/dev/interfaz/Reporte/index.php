@@ -18,7 +18,7 @@ try{
 	if (isset($_POST['$longitud'])) {
 		$longitud= SafeString::safe($_POST['$longitud']);
 	}
-  $reporye  = new Reporte();
+	$reporte= new Reporte();
   $info = $reporte->guardarReporte($descripcion, $latitud, $longitud);
 } catch(Exception $e) {
   

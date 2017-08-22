@@ -31,5 +31,7 @@ try{
 	echo json_encode(array("Status" => "SESSION ERROR"));
 } catch (serviceCantBeCanceled $e){
 	echo json_encode(array("Status" => "CANCEL ERROR"));
+} catch (Exception $e) {
+	echo json_encode(array("status"=>"error","clave"=>"desconocido","explicacion"=>$e->getMessage()));
 }
 ?>

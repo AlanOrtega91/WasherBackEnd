@@ -32,7 +32,15 @@ try{
   	$paymentToken = Payment::updatePaymentMethodForUser($conektaId, $cardToken);
 	echo json_encode(array("Status"=>"OK"));
 	} catch (errorUpdatingPaymentException $e){
-		echo json_encode(array("Status"=>"UPDATE PAYMENT ACCOUNT ERROR"));
+		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
+	} catch (Conekta_Error $e) {
+		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
+	} catch (Exception $e) {
+		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 	}
+} catch (Conekta_Error $e) {
+	echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
+} catch (Exception $e) {
+	echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 }
 ?>

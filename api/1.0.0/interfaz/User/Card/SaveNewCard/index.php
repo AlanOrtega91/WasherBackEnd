@@ -35,8 +35,12 @@ try{
 		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 	} catch (Conekta_Error $e) {
 		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
+	} catch (Exception $e) {
+		echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 	}
 } catch (Conekta_Error $e) {
+	echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
+} catch (Exception $e) {
 	echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 }
 ?>

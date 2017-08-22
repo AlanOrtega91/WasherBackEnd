@@ -36,6 +36,8 @@ try{
 } catch(errorCreatingUserPaymentException $e)
 {
   echo json_encode(array("Status"=>"CREATE PAYMENT ACCOUNT ERROR","User Info"=>$userInfo));
+} catch (Exception $e) {
+	echo json_encode(array("status"=>"error","clave"=>"pago","explicacion"=>$e->getMessage()));
 }
 
 function uploadImage($idClient){

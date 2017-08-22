@@ -96,7 +96,7 @@ class Service {
 			if ($cancelCode == 1) {
 				try {
 					$this->makePayment ( $serviceId, $line, $line ['precio'] * Service::CANCEL_PRICE );
-				} catch ( errorMakingPaymentException $e ) {
+				} catch ( Exception $e ) {
 					$this->dataBase->blockUser ( $line ['idCliente'] );
 				}
 			} else if ($cancelCode == 0) {

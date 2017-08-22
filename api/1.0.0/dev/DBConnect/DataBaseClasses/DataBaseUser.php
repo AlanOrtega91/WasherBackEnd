@@ -1,6 +1,6 @@
 <?php
 require_once dirname ( __FILE__ ) . "/DataBase.php";
-class DataBaseUser {
+class DataBaseUser extends DataBase{
 	const QUERY_READ_USER = "SELECT * FROM Cliente WHERE Email = '%s' AND Password = SHA2(MD5(('%s')),512);";
 	const QUERY_READ_USER_INFO = "SELECT * FROM Cliente
 	LEFT JOIN Sesion_Cliente ON
@@ -25,42 +25,30 @@ class DataBaseUser {
 	const QUERY_DELETE_PNT = "UPDATE Cliente SET pushNotificationToken = '' WHERE pushNotificationToken = '%s';";
 	const QUERY_UPDATE_CONEKTA_ID = "UPDATE Cliente SET ConektaId = '%s' WHERE idcliente = '%s';";
 	const QUERY_UPDATE_DEVICE = "UPDATE Cliente SET Dispositivo = '%s' WHERE idCliente = '%s'";
-	var $mysqli;
-	public function __construct() {
-		$this->mysqli = new mysqli ( DataBase::DB_LINK, DataBase::DB_LOGIN, DataBase::DB_PASSWORD, DataBase::DB_NAME );
-		if ($this->mysqli->connect_errno)
-			throw new errorWithDatabaseException ( "Error connecting with database" );
-		$this->mysqli->set_charset("utf8");
-	}
+
 	public function deletePushNotification($email) {
 		$query = sprintf ( DataBaseUser::QUERY_DELETE_PNT_FOR_CLIENT, $email );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 	}
 	public function insertNewUser($name, $lastName, $email, $password, $phone) {
 		$query = sprintf ( DataBaseUser::QUERY_INSERT_USER, $name, $lastName, $email, $password, $phone );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 	}
 	public function updatePushNotificationToken($clientId, $token) {
 		$query = sprintf ( DataBaseUser::QUERY_DELETE_PNT, $token );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 		
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_PNT_FOR_CLIENT, $token, $clientId );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "Could not create new user " . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 	}
 	
 	function updateConektaId($userId, $conektaId) {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_CONEKTA_ID, $conektaId, $userId );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "Could not update conekta id " . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 	}
 	public function readUser($email, $password) {
 		$query = sprintf ( DataBaseUser::QUERY_READ_USER, $email, $password );
-		if (! ($result = $this->mysqli->query ( $query )))
-			throw new errorWithDatabaseException ( 'Query failed = ' . mysql_error () );
+		$result = $this->ejecutarQuery($query);
 		$rows = $result->fetch_assoc ();
 		if ($result->num_rows === 0)
 			throw new userNotFoundException ( "User not found" );
@@ -68,8 +56,7 @@ class DataBaseUser {
 	}
 	public function readUserInfo($token) {
 		$query = sprintf ( DataBaseUser::QUERY_READ_USER_INFO, $token );
-		if (! ($result = $this->mysqli->query ( $query )))
-			throw new errorWithDatabaseException ( 'Query failed = ' . mysql_error () );
+		$result = $this->ejecutarQuery($query);
 		$rows = $result->fetch_assoc ();
 		if ($result->num_rows === 0)
 			throw new userNotFoundException ( "User not found" );
@@ -78,23 +65,18 @@ class DataBaseUser {
 	public function insertSession($email) {
 		$token = md5 ( uniqid ( mt_rand (), true ) );
 		$query = sprintf ( DataBaseUser::QUERY_INSERT_SESSION, $token, $this->getUserId ( $email ) );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( 'Query failed: ' . $this->mysqli->error );
+		$this->ejecutarQuery($query);
 		return $token;
 	}
 	function getUserId($email) {
 		$query = sprintf ( DataBaseUser::QUERY_GET_USER_ID, $email );
-		if (! $result = $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( 'Query failed: ' . $this->mysqli->error );
+		$result = $this->ejecutarQuery($query);
 		$line = $result->fetch_assoc ();
 		return $line ['idCliente'];
 	}
 	public function getToken($email) {
 		$query = sprintf ( DataBaseUser::QUERY_GET_SESSION, $email );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( 'Query failed = ' . mysql_error () );
-		if (! ($result = $this->mysqli->query ( $query )))
-			throw new errorWithDatabaseException ( 'Query failed' );
+		$result = $this->ejecutarQuery($query);
 		if (mysql_num_rows ( $result ) == 0)
 			throw new sessionNotFoundException ();
 		
@@ -102,18 +84,15 @@ class DataBaseUser {
 	}
 	public function updateImage($userId, $imageName) {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_IMAGE, $imageName, $userId );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "ERROR" );
+		$this->ejecutarQuery($query);
 	}
 	public function deleteSession($email) {
 		$query = sprintf ( DataBaseUser::QUERY_DELETE_SESSION, $this->getUserId ( $email ) );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "ERROR" );
+		$this->ejecutarQuery($query);
 	}
 	public function readSession($token) {
 		$query = sprintf ( DataBaseUser::QUERY_READ_SESSION, $token );
-		if (! ($result = $this->mysqli->query ( $query )))
-			throw new errorWithDatabaseException ( 'Query failed' );
+		$result = $this->ejecutarQuery($query);
 		
 		if ($result->num_rows === 0)
 			throw new noSessionFoundException ( "No session found" );
@@ -122,18 +101,15 @@ class DataBaseUser {
 	}
 	public function updatePassword($email, $password) {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_PASSWORD, $password, $email );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "ERROR" );
+		$this->ejecutarQuery($query);
 	}
 	public function updateUser($idClient, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress) {
 		$query = sprintf ( DataBaseUser::QUERY_UPDATE_USER, $newName, $newLastName, $newPhone, $newEmail, $newBillingName, $newRFC, $newBillingAddress, $idClient );
-		if (! $this->mysqli->query ( $query ))
-			throw new errorWithDatabaseException ( "ERROR" );
+		$this->ejecutarQuery($query);
 	}
 	public function updateDevice($userId,$device) {
 		$query = sprintf(DataBaseUser::QUERY_UPDATE_DEVICE, $device, $userId);
-		if(!$this->mysqli->query($query))
-			throw new errorWithDatabaseException("ERROR al actualizar");
+		$this->ejecutarQuery($query);
 	}
 }
 ?>

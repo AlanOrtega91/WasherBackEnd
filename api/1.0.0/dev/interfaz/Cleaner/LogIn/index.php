@@ -27,5 +27,5 @@ try{
 } catch(errorWithDatabaseException $e)
 {
   echo json_encode(array("Status"=>"ERROR DB".$e->getMessage()));
-}
+} 
 ?>
