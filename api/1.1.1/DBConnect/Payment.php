@@ -2,7 +2,7 @@
 require_once dirname ( __FILE__ ) . "/DataBaseClasses/DataBaseUser.php";
 require_once dirname ( __FILE__ ) . "/User.php";
 require_once dirname ( __FILE__ ) . "/Service.php";
-require_once dirname ( __FILE__ ) . "/../vendor/conekta-php/lib/Conekta.php";
+require_once dirname ( __FILE__ ) . "/../recursos/conekta-php/lib/Conekta.php";
 
 class Payment {
 	//TODO: cambiar a produccion

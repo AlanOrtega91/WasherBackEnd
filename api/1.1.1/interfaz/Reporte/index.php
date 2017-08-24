@@ -1,6 +1,6 @@
 <?php
-require_once dirname(__FILE__)."/../../DBConnect/SafeString.php";
-require_once dirname(__FILE__)."/../../DBConnect/Reporte.php";
+require_once dirname(__FILE__)."/../../../DBConnect/SafeString.php";
+require_once dirname(__FILE__)."/../../../DBConnect/Reporte.php";
 
 header('Content-Type: text/html; charset=utf8');
 
@@ -20,9 +20,6 @@ try{
 	}
 	$reporte= new Reporte();
   $info = $reporte->guardarReporte($descripcion, $latitud, $longitud);
-  echo json_encode(array(
-      "estado"=>"ok",
-  ));
 } catch(Exception $e) {
     echo json_encode(array(
         "estado"=>"error",
