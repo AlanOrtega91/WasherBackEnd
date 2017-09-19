@@ -6,6 +6,7 @@ require_once dirname ( __FILE__ ) . "/../recursos/conekta-php/lib/Conekta.php";
 
 class Payment {
 	
+    //TODO: Cambiar a produccion
 	const KEY = "key_pp8MSFH1FdMaF9o6p6fREg";
 	public static function createUser($firstName, $lastName, $email, $phone) {
 		\Conekta\Conekta::setApiKey(self::KEY);
